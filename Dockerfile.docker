@@ -1,0 +1,43 @@
+# 🔧 1단계: 빌드
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+# ⬇️ 이거 꼭 있어야 함
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
+# 의존성 설치
+COPY package*.json ./
+RUN npm install
+
+# 📄 도커용 환경변수 파일 복사 (.env.docker → .env)
+COPY .env.docker .env
+
+# 전체 코드 복사 및 빌드
+COPY . .
+RUN npm run build
+
+# 🚀 2단계: 실행 이미지
+FROM node:18-alpine
+WORKDIR /app
+
+# 환경변수 (실제 사용되지 않지만 명시적으로 표시)
+ENV NODE_ENV=docker
+
+
+
+# 필요 파일만 복사
+COPY --from=builder /app/package*.json ./
+RUN npm install --omit=dev
+
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/next.config.ts ./
+COPY --from=builder /app/tsconfig.json ./
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/.env .env
+
+EXPOSE 3000
+
+# 실행
+CMD ["npm", "run", "start"]

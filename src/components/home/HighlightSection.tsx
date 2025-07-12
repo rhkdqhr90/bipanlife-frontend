@@ -3,7 +3,7 @@
 
 import React from "react";
 import { HighlightColumn } from "@/components/home/HighlightColumn";
-import { HighlightColumnProps } from "@/components/types/Highlight";
+import { HighlightColumnProps } from "@/types/Highlight";
 import { Smile, Heart, MessageCircle } from "lucide-react";
 
 export const HighlightSection: React.FC = () => {

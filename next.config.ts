@@ -13,4 +13,15 @@ const nextConfig: NextConfig = {
   },
 };
 
+module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*", // 클라이언트는 /api/notice/1 로 요청
+        destination: "http://localhost:8080/api/:path*", // 실제 백엔드로 연결
+      },
+    ];
+  },
+};
+
 export default nextConfig;

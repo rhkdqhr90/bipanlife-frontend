@@ -3,7 +3,7 @@
 
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
-import type { SlideSectionProps } from "@/components/types/SlideSectionProps";
+import type { SlideSectionProps } from "@/types/SlideSectionProps";
 import React from "react";
 
 export const SlideSection = ({ title, description, items }: SlideSectionProps) => {

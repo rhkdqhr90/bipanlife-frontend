@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { HighlightColumnProps } from "@/components/types/Highlight";
+import { HighlightColumnProps } from "@/types/Highlight";
 
 export const HighlightColumn: React.FC<HighlightColumnProps> = ({ title, icon, items, color }) => {
   return (

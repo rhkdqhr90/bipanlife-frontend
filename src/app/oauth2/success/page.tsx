@@ -10,32 +10,25 @@ const OAuth2SuccessPage = () => {
   const { setUser } = useUserStore();
 
   useEffect(() => {
-    const accessToken = searchParams.get("accessToken");
-    const refreshToken = searchParams.get("refreshToken");
+    const rawRedirectUri = searchParams.get("redirectUri") || "/";
+    const decodedRedirect = decodeURIComponent(rawRedirectUri);
 
-    if (!accessToken || !refreshToken) {
-      alert("토큰이 전달되지 않았습니다.");
-      router.replace("/");
-      return;
-    }
+    // ❗ redirectUri가 또다시 /login이면 무한 루프 발생
+    const finalRedirect = decodedRedirect.startsWith("/login") ? "/" : decodedRedirect;
 
-    // ✅ 1. 토큰 저장
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
-
-    // ✅ 2. 사용자 정보 조회
+    // 사용자 정보 조회
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/me`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+      method: "GET",
+      credentials: "include",
     })
       .then(res => {
         if (!res.ok) throw new Error("유저 조회 실패");
         return res.json();
       })
       .then(data => {
+        console.log("🎯 유저 정보:", data);
         setUser(data); // zustand 저장
-        router.replace("/");
+        router.replace(finalRedirect);
       })
       .catch(() => {
         alert("사용자 정보 조회 실패");

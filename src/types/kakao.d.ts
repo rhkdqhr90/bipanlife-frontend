@@ -1,64 +1,76 @@
-declare namespace kakao {
-  namespace maps {
-    function load(callback: () => void): void;
-
-    class Map {
-      constructor(container: HTMLElement, options: MapOptions);
-      setCenter(latLng: LatLng): void;
-      // Add other methods/properties of Map class as needed
-    }
-
-    class LatLng {
-      constructor(lat: number, lng: number);
-      // Add other methods/properties of LatLng class as needed
-    }
-
-    class Marker {
-      constructor(options: MarkerOptions);
-      // Add other methods/properties of Marker class as needed
-    }
-
-    interface MarkerOptions {
-      map: Map;
-      position: LatLng;
-      // Add other marker options as needed
-    }
-
-    namespace services {
-      class Places {
-        constructor();
-        keywordSearch(query: string, callback: (data: PlaceResult[], status: Status) => void): void;
-        // Add other methods/properties of Places class as needed
-      }
-
-      enum Status {
-        OK = "OK",
-        ZERO_RESULT = "ZERO_RESULT",
-        ERROR = "ERROR",
-        // Add other status types if needed
-      }
-
-      interface PlaceResult {
-        place_name: string;
-        x: number; // longitude
-        y: number; // latitude
-        // Add other properties of PlaceResult as needed
-      }
-    }
-
-    interface MapOptions {
-      center: LatLng;
-      level: number;
-      // Add other map options as needed
-    }
-
-    // Add other kakao.maps types as needed
-  }
-  // Add other kakao properties/methods if needed
-}
+export {};
 
 declare global {
   interface Window {
     kakao: typeof kakao;
   }
+
+  namespace kakao.maps {
+    class LatLng {
+      constructor(lat: number, lng: number);
+      getLat(): number;
+      getLng(): number;
+    }
+
+    interface MapOptions {
+      center: LatLng;
+      level?: number;
+      disableDoubleClickZoom?: boolean;
+      scrollwheel?: boolean;
+    }
+
+    class Map {
+      constructor(container: HTMLElement, options: MapOptions);
+      setCenter(latlng: LatLng): void;
+      getCenter(): LatLng;
+      relayout(): void;
+    }
+
+    interface MarkerOptions {
+      map: Map;
+      position: LatLng;
+    }
+
+    class Marker {
+      constructor(options: MarkerOptions);
+      setMap(map: Map | null): void;
+    }
+
+    class InfoWindow {
+      constructor(options: { content: string });
+      open(map: Map, marker: Marker): void;
+    }
+
+    namespace services {
+      class Places {
+        keywordSearch(
+          keyword: string,
+          callback: (data: PlacesSearchResult[], status: Status) => void,
+        ): void;
+      }
+
+      interface PlacesSearchResult {
+        id: string;
+        place_name: string;
+        address_name: string;
+        road_address_name?: string;
+        phone?: string;
+        x: string;
+        y: string;
+      }
+
+      type Status = "OK" | "ZERO_RESULT" | "ERROR";
+    }
+  }
+}
+
+// KakaoPlace는 따로 export해서 사용
+export interface KakaoPlace {
+  id: string;
+  place_name: string;
+  address_name: string;
+  road_address_name: string;
+  phone: string;
+  x: string;
+  y: string;
 }

@@ -8,8 +8,9 @@ export const useAuth = () => {
     try {
       await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`, {
         method: "POST",
+        credentials: "include", // 쿠키 포함
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
         },
       });
     } catch (e) {

@@ -13,17 +13,17 @@ const OAuth2SignUpPage = () => {
 
       <div className="space-y-4">
         <button
+          onClick={() => oauthLogin("naver")}
+          className="w-full py-2 rounded bg-green-500 text-black font-semibold hover:bg-yellow-400"
+        >
+          네이버로 시작하기
+        </button>
+
+        <button
           onClick={() => oauthLogin("kakao")}
           className="w-full py-2 rounded bg-yellow-300 text-black font-semibold hover:bg-yellow-400"
         >
           카카오로 시작하기
-        </button>
-
-        <button
-          onClick={() => oauthLogin("naver")}
-          className="w-full py-2 rounded bg-green-500 text-white font-semibold hover:bg-green-600"
-        >
-          네이버로 시작하기
         </button>
 
         <button

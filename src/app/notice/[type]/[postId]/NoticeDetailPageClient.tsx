@@ -3,10 +3,9 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Script from "next/script";
 import Link from "next/link";
 import { formatDateTime } from "@/utils/data";
-import { MapDisplayWrapper } from "@/components/common/MapDisplayWrapper";
+import { KakaoMapViewer } from "@/components/map/KakaoMapViewer";
 
 interface PostDetail {
   id: number;
@@ -27,7 +26,7 @@ interface PostDetail {
 }
 
 export default function NoticeDetailClient() {
-  const { postId } = useParams();
+  const { postId, type } = useParams();
   const [post, setPost] = useState<PostDetail | null>(null);
 
   useEffect(() => {
@@ -56,18 +55,12 @@ export default function NoticeDetailClient() {
   }, [postId]);
 
   if (!post) return <div>로딩 중...</div>;
+  if (typeof type !== "string") return null;
 
   const isLocationAvailable = post.latitude && post.longitude;
 
   return (
     <div className="bg-gray-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-      {isLocationAvailable && (
-        <Script
-          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&libraries=services&autoload=false`}
-          strategy="beforeInteractive"
-        />
-      )}
-
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="p-6 sm:p-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{post.title}</h1>
@@ -86,13 +79,11 @@ export default function NoticeDetailClient() {
               {post.placeName && <p className="text-gray-700">장소명: {post.placeName}</p>}
               {post.address && <p className="text-gray-700">주소: {post.address}</p>}
               {isLocationAvailable && (
-                <div className="mt-4">
-                  <MapDisplayWrapper
-                    latitude={post.latitude!}
-                    longitude={post.longitude!}
-                    placeName={post.placeName}
-                  />
-                </div>
+                <KakaoMapViewer
+                  latitude={post.latitude!}
+                  longitude={post.longitude!}
+                  placeName={post.placeName}
+                />
               )}
             </div>
           )}
@@ -120,7 +111,7 @@ export default function NoticeDetailClient() {
 
           <div className="flex justify-end border-t pt-4">
             <Link
-              href="/notice"
+              href={`/notice/${type}`}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
             >
               목록으로

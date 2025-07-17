@@ -7,5 +7,6 @@ export interface PostListItem {
   dislikeCount: number;
   commentCount: number;
   createdAt: string; // LocalDateTime → string
+  viewCount: number;
   tags: string[];
 }

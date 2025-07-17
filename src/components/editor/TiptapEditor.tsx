@@ -1,149 +1,121 @@
 "use client";
-import { useEditor, EditorContent, Editor } from "@tiptap/react";
+
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
-import { Bold, Italic, Strikethrough, Heading2, ImageIcon, MapPin } from "lucide-react";
-import { Iframe } from "./extensions/Iframe";
-import { MapSearchModal } from "./MapSearchModal";
-import { useEffect, useCallback, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { MapSearchModal } from "../map/MapSearchModal";
+import { MapPin, Bold, Italic, Strikethrough, Heading2 } from "lucide-react";
+import { useKakaoLoader } from "@/components/map/userKakaoLoader";
 
-// Toolbar Component
-const TiptapToolbar = ({
-  editor,
-  isKakaoMapLoaded,
-}: {
-  editor: Editor | null;
-  isKakaoMapLoaded: boolean;
-}) => {
-  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
-
-  const addImage = useCallback(() => {
-    if (!editor) return;
-    const url = window.prompt("이미지 URL을 입력하세요");
-
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
-  }, [editor]);
-
-  const handleMapSelect = useCallback(
-    (iframeSrc: string) => {
-      if (!editor) return;
-      console.log("handleMapSelect called with iframeSrc:", iframeSrc);
-      editor.chain().focus().setIframe({ src: iframeSrc }).run();
-      console.log("setIframe command executed.");
-      setIsMapModalOpen(false);
-    },
-    [editor],
-  );
-
-  if (!editor) return null;
-
-  return (
-    <>
-      <div className="flex items-center space-x-1 border-b border-gray-300 bg-gray-50 p-2 rounded-t-lg">
-        <button
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 rounded ${editor.isActive("bold") ? "bg-gray-300" : "hover:bg-gray-200"}`}
-          title="Bold"
-        >
-          <Bold className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 rounded ${editor.isActive("italic") ? "bg-gray-300" : "hover:bg-gray-200"}`}
-          title="Italic"
-        >
-          <Italic className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={`p-2 rounded ${editor.isActive("strike") ? "bg-gray-300" : "hover:bg-gray-200"}`}
-          title="Strikethrough"
-        >
-          <Strikethrough className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={`p-2 rounded ${editor.isActive("heading", { level: 2 }) ? "bg-gray-300" : "hover:bg-gray-200"}`}
-          title="Heading 2"
-        >
-          <Heading2 className="w-4 h-4" />
-        </button>
-        <button onClick={addImage} className="p-2 rounded hover:bg-gray-200" title="Add Image">
-          <ImageIcon className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => setIsMapModalOpen(true)}
-          className={`p-2 rounded hover:bg-gray-200 ${!isKakaoMapLoaded && "opacity-50 cursor-not-allowed"}`}
-          title="Search Map"
-          disabled={!isKakaoMapLoaded}
-        >
-          <MapPin className="w-4 h-4" />
-        </button>
-      </div>
-
-      {isMapModalOpen && (
-        <MapSearchModal
-          onClose={() => setIsMapModalOpen(false)}
-          onSelect={handleMapSelect}
-          isKakaoMapLoaded={isKakaoMapLoaded}
-        />
-      )}
-    </>
-  );
-};
-
-// Main Editor Component
-interface TiptapEditorProps {
-  content: string;
-  onChange: (content: string) => void;
-  isKakaoMapLoaded: boolean;
+interface LocationInfo {
+  placeName: string;
+  address: string;
+  latitude: number;
+  longitude: number;
 }
 
-const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
+interface TiptapEditorProps {
+  content: string;
+  onChange: (html: string) => void;
+  onSelectLocation?: (location: LocationInfo) => void;
+}
+
+export const TiptapEditor = ({ content, onChange, onSelectLocation }: TiptapEditorProps) => {
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(null);
+  const mapInstanceRef = useRef<kakao.maps.Map | null>(null);
+  const isKakaoMapLoaded = useKakaoLoader();
+
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
-        },
-      }),
-      Placeholder.configure({
-        placeholder: "내용을 입력하세요...",
-      }),
-      Image.configure({
-        inline: true,
-      }),
-      Iframe,
+      StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
+      Placeholder.configure({ placeholder: "내용을 입력하세요..." }),
+      Image,
     ],
-    content: content,
-    onUpdate: ({ editor }) => {
+    content,
+    onUpdate({ editor }) {
       onChange(editor.getHTML());
     },
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-full focus:outline-none p-4 min-h-[250px] border-t-0 rounded-b-lg",
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-full focus:outline-none p-4 min-h-[300px] max-h-[500px] overflow-y-auto bg-white rounded-b-lg border-x border-b border-gray-300",
       },
     },
   });
 
+  // 🔧 위치 선택 처리 함수
+  const handleLocationSelect = (location: LocationInfo) => {
+    console.log("📍 선택된 위치:", location);
+    setSelectedLocation(location); // 내부 상태 업데이트
+    setShowMapModal(false); // 모달 닫기
+    onSelectLocation?.(location); // 상위로 전달 (옵셔널)
+  };
+
+  // 지도 리사이징 (모달 오픈 후)
   useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content, false);
+    if (isKakaoMapLoaded && showMapModal && mapInstanceRef.current) {
+      setTimeout(() => {
+        console.log("🌀 relayout 호출");
+        mapInstanceRef.current?.relayout();
+      }, 300);
     }
-  }, [content, editor]);
+  }, [isKakaoMapLoaded, showMapModal]);
 
   return (
-    <div className="border border-gray-300 rounded-lg overflow-hidden">
-      <TiptapToolbar editor={editor} isKakaoMapLoaded={true} />
-      <div className="max-h-[400px] overflow-y-auto">
-        <EditorContent editor={editor} />
+    <div className="w-full">
+      {/* 툴바 */}
+      <div className="flex gap-2 border px-2 py-1 bg-gray-100 rounded-t">
+        <button onClick={() => editor?.chain().focus().toggleBold().run()}>
+          <Bold size={16} />
+        </button>
+        <button onClick={() => editor?.chain().focus().toggleItalic().run()}>
+          <Italic size={16} />
+        </button>
+        <button onClick={() => editor?.chain().focus().toggleStrike().run()}>
+          <Strikethrough size={16} />
+        </button>
+        <button onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}>
+          <Heading2 size={16} />
+        </button>
+        <button
+          onClick={() => {
+            console.log("🗺 지도 버튼 클릭됨");
+            setShowMapModal(true);
+          }}
+          disabled={!isKakaoMapLoaded}
+        >
+          <MapPin size={16} />
+        </button>
       </div>
+
+      {/* 에디터 */}
+      <EditorContent editor={editor} className="custom-editor" />
+
+      {/* 선택된 위치 미리 보기 (선택사항) */}
+      {selectedLocation && (
+        <div className="mt-4 text-sm text-gray-600">
+          <p>📌 장소명: {selectedLocation.placeName}</p>
+          <p>📍 주소: {selectedLocation.address}</p>
+          <p>
+            📐 좌표: {selectedLocation.latitude}, {selectedLocation.longitude}
+          </p>
+        </div>
+      )}
+
+      {/* 지도 검색 모달 */}
+      {showMapModal && (
+        <MapSearchModal
+          onClose={() => {
+            console.log("❌ 지도 모달 닫힘");
+            setShowMapModal(false);
+          }}
+          isKakaoMapLoaded={isKakaoMapLoaded}
+          onSelectLocation={handleLocationSelect}
+        />
+      )}
     </div>
   );
 };
-
-export default TiptapEditor;

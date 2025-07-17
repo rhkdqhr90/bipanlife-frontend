@@ -1,34 +1,47 @@
-// 📄 src/lib/apis/notice.ts ← 여기에 있어야 함 (확장자 .ts, 컴포넌트 아님)
-export const fetchNoticePostById = async (postId: number, token?: string) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`, {
-    cache: "no-store",
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  });
+// 📄 src/lib/apis/notice.ts
 
-  if (!res.ok) return null;
-  return res.json();
+import { PostListItem } from "@/types/PostListItem";
+
+// 게시판 타입 정의
+export type NoticeType = "terms" | "privacy" | "guideline" | "discussion" | "faq" | "notice";
+
+// 각 type에 해당하는 boardId 매핑
+const boardTypeMap: Record<NoticeType, number> = {
+  terms: 1,
+  privacy: 2,
+  guideline: 3,
+  discussion: 4,
+  faq: 5,
+  notice: 6,
 };
 
-export const fetchNoticePosts = async (boardId: number, query: string = "", page: number = 1) => {
-  const size = 10;
-
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/boards/${boardId}`);
-  url.searchParams.append("page", String(page - 1));
-  url.searchParams.append("size", String(size));
-  if (query) {
-    url.searchParams.append("query", query);
-  }
-
-  const res = await fetch(url.toString(), {
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
+// 실제 fetch 함수
+export async function fetchNoticePostsByType(
+  type: NoticeType,
+  query: string = "",
+  page: number = 1,
+  size: number = 10,
+): Promise<{
+  content: PostListItem[];
+  totalPages: number;
+  totalElements: number;
+}> {
+  const boardId = boardTypeMap[type];
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/boards/${boardId}?page=${page - 1}&size=${size}&query=${encodeURIComponent(query)}`,
+    {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
     },
-  });
+  );
 
   if (!res.ok) {
-    throw new Error("공지사항 목록을 불러오는 데 실패했습니다.");
+    throw new Error(`(${type}) 게시글 목록을 불러오는 데 실패했습니다.`);
   }
 
   return res.json();
-};
+}

@@ -1,11 +1,12 @@
 "use client";
+
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { useState, useRef } from "react";
 import { useUserStore } from "@/stores/userStore";
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/hooK/userAuth";
-import { useRouter } from "next/navigation";
-
+import { useRouter, usePathname } from "next/navigation";
 import { navLinks } from "@/constants/navLinks";
 
 const Header = () => {
@@ -13,30 +14,45 @@ const Header = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const pathname = usePathname();
   const router = useRouter();
-
-  const { userInfo } = useUserStore();
-  const { logout } = useAuth();
+  const { userInfo, setUser } = useUserStore();
   const isLoggedIn = !!userInfo;
+  const { logout } = useAuth();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/me`, {
+          credentials: "include", // 서버가 쿠키 기반 JWT라면 유지
+        });
+
+        if (!res.ok) throw new Error("Unauthorized");
+
+        const user = await res.json();
+        setUser(user);
+      } catch (err) {
+        console.error("유저 정보 불러오기 실패:", err);
+        alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+        logout();
+        router.push("/login");
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleLogout = () => {
     logout();
     router.replace("/");
-    if (isMobileMenuOpen) {
-      setIsMobileMenuOpen(false);
-    }
+    setIsMobileMenuOpen(false);
   };
 
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isMobileMenuOpen]);
+  const handleLogin = () => {
+    const currentPath = window.location.pathname + window.location.search;
+    const encodedRedirect = encodeURIComponent(currentPath);
+    router.push(`/login?redirectUri=${encodedRedirect}`);
+  };
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,20 +66,24 @@ const Header = () => {
     <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
       <div className="w-full flex justify-center">
         <div className="w-full max-w-[1080px] flex items-center justify-between px-4 py-3">
+          {/* 로고 + 메뉴 */}
           <div className="flex items-center space-x-6">
             <div className="text-2xl font-bold min-w-[100px]">
               <Link href="/">비판생</Link>
             </div>
             <nav className="hidden md:flex items-center space-x-6 text-sm text-gray-700">
-              {navLinks.map(link =>
-                link.dropdown ? (
+              {navLinks.map(link => {
+                const isDropdown = !!link.dropdown?.length;
+                const isActive =
+                  pathname === link.href ||
+                  link.dropdown?.some(item => pathname.startsWith(item.href));
+
+                return isDropdown ? (
                   <div
                     key={link.name}
                     className="relative"
                     onMouseEnter={() => {
-                      if (timeoutRef.current) {
-                        clearTimeout(timeoutRef.current);
-                      }
+                      if (timeoutRef.current) clearTimeout(timeoutRef.current);
                       setOpenDropdown(link.name);
                     }}
                     onMouseLeave={() => {
@@ -72,33 +92,50 @@ const Header = () => {
                       }, 200);
                     }}
                   >
-                    <button className="text-gray-600 hover:text-gray-900">{link.name}</button>
+                    <Link
+                      href={link.href || "#"}
+                      className={`text-gray-600 hover:text-gray-900 inline-block ${
+                        isActive ? "text-blue-600 font-bold" : ""
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+
                     {openDropdown === link.name && (
-                      <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                        {link.dropdown.map(item => (
-                          <Link
-                            key={item.name}
-                            href={item.href}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            {item.name}
-                          </Link>
-                        ))}
+                      <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-[9999]">
+                        {link.dropdown?.map(item => {
+                          const isSubActive = pathname === item.href;
+                          return (
+                            <Link
+                              key={item.name}
+                              href={item.href}
+                              className={`block px-4 py-2 text-sm hover:bg-gray-100 ${
+                                isSubActive ? "text-blue-600 font-semibold" : "text-gray-700"
+                              }`}
+                            >
+                              {item.name}
+                            </Link>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
                 ) : (
                   <Link
                     key={link.name}
-                    href={link.href}
-                    className="text-gray-600 hover:text-gray-900"
+                    href={link.href!}
+                    className={`text-gray-600 hover:text-gray-900 ${
+                      isActive ? "text-blue-600 font-bold" : ""
+                    }`}
                   >
                     {link.name}
                   </Link>
-                ),
-              )}
+                );
+              })}
             </nav>
           </div>
+
+          {/* 로그인/검색 영역 */}
           <div className="hidden md:flex items-center space-x-4">
             <form onSubmit={handleSearchSubmit}>
               <input
@@ -123,9 +160,9 @@ const Header = () => {
               </div>
             ) : (
               <>
-                <Link href="/login" className="text-gray-600 hover:text-gray-900">
+                <button onClick={handleLogin} className="text-gray-600 hover:text-gray-900">
                   로그인
-                </Link>
+                </button>
                 <Link
                   href="/signup"
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -136,6 +173,8 @@ const Header = () => {
             )}
           </div>
         </div>
+
+        {/* 모바일 햄버거 버튼 */}
         <div className="md:hidden">
           <button
             onClick={() => setIsMobileMenuOpen(prev => !prev)}
@@ -158,37 +197,42 @@ const Header = () => {
           </button>
         </div>
       </div>
+
+      {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white shadow-md px-4 pt-4 pb-6 space-y-4">
-          {navLinks.map(link => (
-            <div key={link.name}>
-              {link.dropdown ? (
-                <div>
-                  <p className="font-semibold text-gray-800">{link.name}</p>
-                  <div className="pl-4 mt-2 space-y-2">
-                    {link.dropdown.map(item => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className="block text-gray-700"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
+          {navLinks.map(link => {
+            const hasDropdown = Array.isArray(link.dropdown) && link.dropdown.length > 0;
+            return (
+              <div key={link.name}>
+                {hasDropdown ? (
+                  <div>
+                    <p className="font-semibold text-gray-800">{link.name}</p>
+                    <div className="pl-4 mt-2 space-y-2">
+                      {link.dropdown?.map(item => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className="block text-gray-700"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <Link
-                  href={link.href}
-                  className="block text-gray-700"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              )}
-            </div>
-          ))}
+                ) : (
+                  <Link
+                    href={link.href!}
+                    className="block text-gray-700"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                )}
+              </div>
+            );
+          })}
           <hr />
           {isLoggedIn ? (
             <div className="flex items-center justify-between text-gray-700 px-2">

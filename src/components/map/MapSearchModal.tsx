@@ -82,9 +82,6 @@ export const MapSearchModal = ({
           };
 
           const latLng = new window.kakao.maps.LatLng(Number(place.y), Number(place.x));
-          console.log("📌 마커 좌표:", latLng.getLat(), latLng.getLng());
-          const center = map.getCenter();
-          console.log("📌 지도 중심 좌표:", center.getLat(), center.getLng());
 
           map.setCenter(latLng);
 

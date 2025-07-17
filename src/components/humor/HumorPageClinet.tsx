@@ -1,7 +1,6 @@
 "use client";
 
 import { formatDateTime } from "@/utils/data";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Pagination } from "../common/Pagination";
 import { PostListItem } from "@/types/PostListItem";
@@ -73,7 +72,7 @@ export const HumorPageClient = ({ query, currentPage }: Props) => {
                     <div className="truncate text-blue-600 hover:underline max-w-full">
                       {post.title}
                     </div>
-                    {post.commentCount > 0 && (
+                    {post.commentCount >= 0 && (
                       <div className="text-gray-500 text-sm flex-shrink-0">
                         [{post.commentCount}]
                       </div>

@@ -6,9 +6,9 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
 import { useRef, useState, useEffect } from "react";
 import { MapSearchModal } from "../map/MapSearchModal";
-import { MapPin, Bold, Italic, Strikethrough, Heading2 } from "lucide-react";
+import { MapPin, Bold, Italic, Strikethrough, Heading2, ImageIcon } from "lucide-react";
 import { useKakaoLoader } from "@/components/map/userKakaoLoader";
-
+import { uploadImages } from "@/lib/apis/uploadImages";
 interface LocationInfo {
   placeName: string;
   address: string;
@@ -27,6 +27,8 @@ export const TiptapEditor = ({ content, onChange, onSelectLocation }: TiptapEdit
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(null);
   const mapInstanceRef = useRef<kakao.maps.Map | null>(null);
   const isKakaoMapLoaded = useKakaoLoader();
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null); //파일 업로드
 
   const editor = useEditor({
     extensions: [
@@ -54,14 +56,33 @@ export const TiptapEditor = ({ content, onChange, onSelectLocation }: TiptapEdit
     onSelectLocation?.(location); // 상위로 전달 (옵셔널)
   };
 
+  const handleMultiImageUpload = async (files: File[]) => {
+    if (!files.length || !editor) return;
+
+    try {
+      const urls = await uploadImages(files);
+      urls.forEach(url => {
+        editor.chain().focus().setImage({ src: url }).run();
+      });
+    } catch (err) {
+      console.error("이미지 업로드 실패:", err);
+      alert("이미지 업로드 중 오류가 발생했습니다.");
+    }
+  };
+
   // 지도 리사이징 (모달 오픈 후)
   useEffect(() => {
-    if (isKakaoMapLoaded && showMapModal && mapInstanceRef.current) {
-      setTimeout(() => {
-        console.log("🌀 relayout 호출");
-        mapInstanceRef.current?.relayout();
-      }, 300);
-    }
+    if (!isKakaoMapLoaded || !showMapModal) return;
+
+    const container = mapRef.current;
+    if (!container) return;
+    const options = {
+      center: new window.kakao.maps.LatLng(37.5665, 126.978),
+      level: 3,
+    };
+
+    const map = new window.kakao.maps.Map(container, options);
+    mapInstanceRef.current = map;
   }, [isKakaoMapLoaded, showMapModal]);
 
   return (
@@ -80,9 +101,11 @@ export const TiptapEditor = ({ content, onChange, onSelectLocation }: TiptapEdit
         <button onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}>
           <Heading2 size={16} />
         </button>
+        <button onClick={() => fileInputRef.current?.click()}>
+          <ImageIcon size={16} />
+        </button>
         <button
           onClick={() => {
-            console.log("🗺 지도 버튼 클릭됨");
             setShowMapModal(true);
           }}
           disabled={!isKakaoMapLoaded}
@@ -90,6 +113,18 @@ export const TiptapEditor = ({ content, onChange, onSelectLocation }: TiptapEdit
           <MapPin size={16} />
         </button>
       </div>
+      {/* 파일 입력 */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple // ✅ 이걸 꼭 넣어야 여러 파일 선택 가능
+        onChange={e => {
+          if (!e.target.files) return;
+          const fileArray = Array.from(e.target.files); // ✅ FileList → File[]
+          handleMultiImageUpload(fileArray);
+        }}
+        className="hidden"
+      />
 
       {/* 에디터 */}
       <EditorContent editor={editor} className="custom-editor" />

@@ -57,7 +57,8 @@ export default function NoticeDetailClient() {
   if (!post) return <div>로딩 중...</div>;
   if (typeof type !== "string") return null;
 
-  const isLocationAvailable = post.latitude && post.longitude;
+  const isLocationAvailable =
+    typeof post.latitude === "number" && typeof post.longitude === "number";
 
   return (
     <div className="bg-gray-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8">

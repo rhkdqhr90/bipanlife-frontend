@@ -16,10 +16,6 @@ declare global {
         constructor(latitude: number, longitude: number);
       }
 
-      class Map {
-        constructor(container: HTMLElement, options: MapOptions);
-      }
-
       interface MapOptions {
         center: LatLng;
         level: number;

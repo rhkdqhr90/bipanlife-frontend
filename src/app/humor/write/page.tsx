@@ -3,6 +3,7 @@
 import { TiptapEditor } from "@/components/editor/TiptapEditor";
 import { createPost } from "@/lib/apis/posts";
 import { useUserStore } from "@/stores/userStore";
+import { sanitizeImageSrcInHtml } from "@/utils/sanitizeImageSrcInHtml";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -12,6 +13,7 @@ const HumorWritePage = () => {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   if (!userInfo) {
     return <p className="text-center mt-10 text-gray-500">로그인이 필요합니다.</p>;
@@ -21,7 +23,8 @@ const HumorWritePage = () => {
     e.preventDefault();
     try {
       const boardId = 10;
-      await createPost({ boardId, title, content });
+      const cleanedContent = sanitizeImageSrcInHtml(content);
+      await createPost({ boardId, title, content: cleanedContent, imageUrls });
       router.push("/humor");
     } catch (err) {
       console.error("글 작성 실패", err);
@@ -43,7 +46,11 @@ const HumorWritePage = () => {
             className="w-full text-2xl font-semibold border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-blue-500 pb-2 mb-6 bg-transparent"
           />
 
-          <TiptapEditor content={content} onChange={setContent} />
+          <TiptapEditor
+            content={content}
+            onChange={setContent}
+            onUploadImageUrls={filename => setImageUrls(prev => [...prev, ...filename])}
+          />
 
           <div className="flex justify-end mt-8">
             <button

@@ -33,6 +33,7 @@ export const HumorPageClient = ({ query, currentPage }: Props) => {
           pageSize,
           query,
         );
+        console.log("👉 응답 샘플", content[0]);
         setPosts(content);
         setTotalPages(totalPages);
         setTotalElements(totalElements);

@@ -4,6 +4,7 @@ interface CreatePostRequest {
   boardId: number;
   title: string;
   content: string;
+  imageUrls: string[];
 }
 
 export async function createPost(data: CreatePostRequest) {

@@ -20,9 +20,15 @@ interface TiptapEditorProps {
   content: string;
   onChange: (html: string) => void;
   onSelectLocation?: (location: LocationInfo) => void;
+  onUploadImageUrls?: (urls: string[]) => void;
 }
 
-export const TiptapEditor = ({ content, onChange, onSelectLocation }: TiptapEditorProps) => {
+export const TiptapEditor = ({
+  content,
+  onChange,
+  onSelectLocation,
+  onUploadImageUrls,
+}: TiptapEditorProps) => {
   const [showMapModal, setShowMapModal] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(null);
   const mapInstanceRef = useRef<kakao.maps.Map | null>(null);
@@ -64,6 +70,8 @@ export const TiptapEditor = ({ content, onChange, onSelectLocation }: TiptapEdit
       urls.forEach(url => {
         editor.chain().focus().setImage({ src: url }).run();
       });
+
+      onUploadImageUrls?.(urls);
     } catch (err) {
       console.error("이미지 업로드 실패:", err);
       alert("이미지 업로드 중 오류가 발생했습니다.");

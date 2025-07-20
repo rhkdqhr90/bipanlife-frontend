@@ -1,8 +1,7 @@
 export const uploadImages = async (files: File[]): Promise<string[]> => {
   const formData = new FormData();
-
   files.forEach(file => {
-    formData.append("images", file); // ✅ 같은 키(images)로 여러 번 append
+    formData.append("images", file);
   });
 
   const response = await fetch("/api/post-images/upload", {
@@ -14,8 +13,14 @@ export const uploadImages = async (files: File[]): Promise<string[]> => {
   if (!response.ok) {
     throw new Error("이미지 업로드 실패: " + response.status);
   }
-  alert("이미지가 업로드 되었습니다.");
 
-  const urls: string[] = await response.json();
-  return urls;
+  const presignedUrls: string[] = await response.json();
+
+  // presigned → 정적 URL로 변환
+  const staticUrls = presignedUrls.map(url => {
+    const pathname = new URL(url).pathname; // "/bipan-image/xxx.jpg"
+    return `http://localhost:9000${pathname}`;
+  });
+
+  return staticUrls;
 };

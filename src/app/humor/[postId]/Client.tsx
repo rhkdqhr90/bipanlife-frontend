@@ -9,7 +9,8 @@ import { formatDateTime } from "@/utils/data";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "next/navigation";
 interface PostDetail {
   id: number;
   title: string;
@@ -26,12 +27,16 @@ interface PostDetail {
   commentCount: number;
   createdAt: string;
   tags: string[];
+  authorId: number;
 }
 
 export default function HumorPostDetailClient() {
   const { postId } = useParams();
   const [post, setPost] = useState<PostDetail | null>(null);
   const [comments, setComments] = useState<PostComment[]>([]);
+  const userInfo = useUserStore(state => state.userInfo);
+  const isAuthor = userInfo?.userId === post?.authorId;
+  const router = useRouter();
 
   const fetchPost = async () => {
     try {
@@ -58,6 +63,25 @@ export default function HumorPostDetailClient() {
       setComments(data);
     } catch (err) {
       console.error("댓글 불러오기 실패:", err);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("정말로 이 게시글을 삭제하시겠습니까?")) return;
+
+    try {
+      if (post?.id == null) return;
+      const res = await fetch(`/api/posts/${post.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("삭제 실패");
+
+      alert("삭제되었습니다.");
+      router.push("/humor");
+    } catch (err) {
+      console.error(err);
+      alert("삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -124,6 +148,22 @@ export default function HumorPostDetailClient() {
 
           {/* 본문 내용 */}
           <HtmlWithPresignedImages html={post.content} />
+          {isAuthor && (
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                onClick={() => router.push(`/humor/edit/${post.id}`)}
+              >
+                ✏️ 수정
+              </button>
+              <button
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                onClick={handleDelete}
+              >
+                🗑️ 삭제
+              </button>
+            </div>
+          )}
 
           {/* 댓글 입력 */}
           <div className="mt-12">

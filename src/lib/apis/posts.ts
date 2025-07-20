@@ -20,6 +20,26 @@ export async function createPost(data: CreatePostRequest) {
   return res.json();
 }
 
+export const updatePost = async (postId: number, body: any) => {
+  const res = await fetch(`/api/posts/${postId}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error("게시글 수정 실패");
+  return res.json();
+};
+
+export const deletePost = async (postId: number) => {
+  const res = await fetch(`/api/posts/${postId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("게시글 삭제 실패");
+  return res.json();
+};
+
 export async function fetchPostsByBoardId(
   boardId: number,
   page: number = 1,

@@ -23,6 +23,22 @@ interface TiptapEditorProps {
   onUploadImageUrls?: (urls: string[]) => void;
 }
 
+const CustomImage = Image.extend({
+  addAttributes() {
+    return {
+      src: {
+        default: null,
+      },
+      alt: {
+        default: null,
+      },
+      title: {
+        default: null,
+      },
+    };
+  },
+});
+
 export const TiptapEditor = ({
   content,
   onChange,
@@ -38,9 +54,10 @@ export const TiptapEditor = ({
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
+      // @ts-expect-error image is valid but not in type definition
+      StarterKit.configure({ heading: { levels: [1, 2, 3] }, image: false }),
       Placeholder.configure({ placeholder: "내용을 입력하세요..." }),
-      Image,
+      CustomImage,
     ],
     content,
     onUpdate({ editor }) {

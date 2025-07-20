@@ -5,6 +5,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 interface UserInfo {
   nickname: string;
   profileImage?: string;
+  userId: number;
 }
 
 interface UserStore {

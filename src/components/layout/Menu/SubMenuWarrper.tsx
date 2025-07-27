@@ -1,10 +1,13 @@
 "use client";
-
 import { usePathname } from "next/navigation";
-import { navLinks } from "@/constants/navLinks";
 import { SubMenu } from "./SubMenu";
+import { NavLink } from "@/types/MenuItem";
 
-export const SubMenuWrapper = () => {
+interface SubMenuWrapperProps {
+  navLinks: NavLink[];
+}
+
+export const SubMenuWrapper = ({ navLinks }: SubMenuWrapperProps) => {
   const pathname = usePathname();
 
   // 현재 path와 가장 먼저 일치하는 navLink 선택

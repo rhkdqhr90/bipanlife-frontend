@@ -7,9 +7,13 @@ import { useUserStore } from "@/stores/userStore";
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/hooK/userAuth";
 import { useRouter, usePathname } from "next/navigation";
-import { navLinks } from "@/constants/navLinks";
+import { NavLink } from "@/types/MenuItem";
 
-const Header = () => {
+interface HeaderProps {
+  navLinks: NavLink[];
+}
+
+export const Header = ({ navLinks }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -68,7 +72,7 @@ const Header = () => {
         <div className="w-full max-w-[1080px] flex items-center justify-between px-4 py-3">
           {/* 로고 + 메뉴 */}
           <div className="flex items-center space-x-6">
-            <div className="text-2xl font-bold min-w-[100px]">
+            <div className="text-2xl font-bold min-w-[100px] mr-32">
               <Link href="/">비판생</Link>
             </div>
             <nav className="hidden md:flex items-center space-x-6 text-sm text-gray-700">

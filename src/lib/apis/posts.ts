@@ -7,6 +7,16 @@ interface CreatePostRequest {
   imageUrls: string[];
 }
 
+export interface Page<T> {
+  content: T[];
+  totalPages: number;
+  totalElements: number;
+  number: number;
+  size: number;
+  first: boolean;
+  last: boolean;
+}
+
 export async function createPost(data: CreatePostRequest) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`, {
     method: "POST",
@@ -20,7 +30,7 @@ export async function createPost(data: CreatePostRequest) {
   return res.json();
 }
 
-export const updatePost = async (postId: number, body: any) => {
+export const updatePost = async (postId: number, body: unknown) => {
   const res = await fetch(`/api/posts/${postId}`, {
     method: "PATCH",
     credentials: "include",
@@ -39,6 +49,36 @@ export const deletePost = async (postId: number) => {
   if (!res.ok) throw new Error("게시글 삭제 실패");
   return res.json();
 };
+
+// 동적 게시판 을 위한 GetBoardCode
+export async function getPostListByBoardCode(
+  boardCode: string,
+  page: number = 0,
+  size: number = 10,
+): Promise<Page<PostListItem> | null> {
+  const encoded = encodeURIComponent(boardCode);
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?boardCode=${encoded}&page=${page}&size=${size}`;
+
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("❌ fetch 실패. status:", res.status);
+      return null; // 실패 시 null 반환
+    }
+
+    return data;
+  } catch (err) {
+    console.error("🔥 예외 발생:", err);
+    return null; // 네트워크 오류 등
+  }
+}
 
 export async function fetchPostsByBoardId(
   boardId: number,

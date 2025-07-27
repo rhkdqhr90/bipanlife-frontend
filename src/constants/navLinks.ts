@@ -42,11 +42,13 @@ export const navLinks: NavLink[] = [
     ],
   },
   {
-    name: "게시판",
-    href: "/board",
+    name: "자유게시판",
+    href: "/free",
     dropdown: [
-      { name: "자유게시판", href: "/board/free" },
-      { name: "정보공유", href: "/board/info" },
+      { name: "자유게시판", href: "/free/free" },
+      { name: "잡담", href: "/free/general" },
+      { name: "일상", href: "/free/life" },
+      { name: "취미", href: "/free/hobby" },
     ],
   },
   {

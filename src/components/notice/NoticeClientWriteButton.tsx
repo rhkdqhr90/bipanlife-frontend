@@ -3,7 +3,7 @@
 import { useUserStore } from "@/stores/userStore";
 import { useRouter, usePathname } from "next/navigation";
 
-export const ClientWriteButton = () => {
+export const NoticeClientWriteButton = () => {
   const { userInfo } = useUserStore();
   const router = useRouter();
   const pathname = usePathname();

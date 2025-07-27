@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { SideFloatingMenu } from "@/components/home/SideFloationMenu";
 import { HotBestSection } from "@/components/home/HotBestSection";
 import { SubMenuWrapper } from "@/components/layout/Menu/SubMenuWarrper";
+import { getPanels } from "@/lib/apis/getPanels";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,13 +29,14 @@ async function getHotBestItems() {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const hotBestItems = await getHotBestItems();
+  const navLinks = await getPanels();
 
   return (
     <html lang="ko">
       <body className={`${inter.className} bg-[#f8f9fa]`}>
         <div className="flex flex-col min-h-screen pt-16">
-          <Header />
-          <SubMenuWrapper />
+          <Header navLinks={navLinks} />
+          <SubMenuWrapper navLinks={navLinks} />
           <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-6">{children}</main>
           <div className="w-full max-w-6xl mx-auto px-4 pt-6 mt-6 border-t border-gray-200">
             <HotBestSection title="인기 게시물" items={hotBestItems} />

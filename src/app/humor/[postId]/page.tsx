@@ -2,6 +2,6 @@
 
 import HumorPostDetailClient from "./Client";
 
-export default function HumorPageClient() {
+export default function HumorPageDeatilClient() {
   return <HumorPostDetailClient />;
 }

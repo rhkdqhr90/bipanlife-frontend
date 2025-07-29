@@ -32,7 +32,7 @@ const groupOrder: Record<string, number> = {
   HUMOR: 6,
   FREE: 5,
   DISCUSSION: 4,
-  PRAISE: 3,
+  //PRAISE: 3,
   CRITICISM: 2,
   HOT: 1,
 };
@@ -56,29 +56,33 @@ export async function getPanels(): Promise<NavLink[]> {
     return acc;
   }, {});
 
-  // 2. 게시판 순서를 위한 Sort
+  // 🔹 2. 그룹 정렬
   const sortedGroups = Object.entries(grouped).sort(
-    ([a], [b]) => (groupOrder[a] || 99) - (groupOrder[b] || 99),
+    ([a], [b]) => (groupOrder[a] ?? 99) - (groupOrder[b] ?? 99),
   );
 
+  // 🔹 3. 그룹별 처리
   return sortedGroups.map(([group, boards]) => {
-    // CRITICISM 그룹인 경우 특별 처리
+    // ✅ 🔹 내부 게시판 정렬 추가 (예: id 기준)
+    const sortedBoards = [...boards].sort((a, b) => a.id - b.id);
+
+    // 특별 처리: 비판 게시판
     if (group === "CRITICISM") {
       return {
         name: groupNameMap[group] || group,
-        href: `/critic/${boards[0].boardCode.replace("critic/", "")}`, // critic/ 접두사 제거
-        dropdown: boards.map(board => ({
+        href: `/critic/${sortedBoards[0].boardCode.replace("critic/", "")}`,
+        dropdown: sortedBoards.map(board => ({
           name: board.boardName,
-          href: `/critic/${board.boardCode.replace("critic/", "")}`, // critic/ 접두사 제거
+          href: `/critic/${board.boardCode.replace("critic/", "")}`,
         })),
       };
     }
 
-    // 🔹 3. 각 그룹을 NavLink 형태로 변환
+    // 일반 처리
     return {
       name: groupNameMap[group] || group,
-      href: `/${boards[0].boardCode}`,
-      dropdown: boards.map(board => ({
+      href: `/${sortedBoards[0].boardCode}`,
+      dropdown: sortedBoards.map(board => ({
         name: board.boardName,
         href: `/${board.boardCode}`,
       })),

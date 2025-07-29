@@ -10,6 +10,7 @@ import { KakaoMapViewer } from "@/components/map/KakaoMapViewer";
 import { CommentSection } from "@/components/comment/CommentSection";
 import { PostComment } from "@/types/comment";
 import { useUserStore } from "@/stores/userStore";
+import { ReactionButtons } from "@/components/common/ReactionButton";
 
 interface PostDetail {
   id: number;
@@ -26,7 +27,7 @@ interface PostDetail {
   viewCount: number;
   commentCount: number;
   createdAt: string;
-  authorId: string;
+  authorId: number;
   tags: string[];
 }
 
@@ -35,7 +36,11 @@ export default function FreeDetailClient() {
   const [post, setPost] = useState<PostDetail | null>(null);
   const [comments, setComments] = useState<PostComment[]>([]);
   const userInfo = useUserStore(state => state.userInfo);
-  const isAuthor = userInfo?.userId === post?.authorId;
+  const isAuthor = userInfo?.id === post?.authorId;
+  console.log("userInfo", userInfo?.id);
+  console.log("post", post);
+  console.log("isAuthor", isAuthor);
+
   const router = useRouter();
 
   const fetchComments = async () => {
@@ -152,6 +157,10 @@ export default function FreeDetailClient() {
             className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none mb-8"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+          {/* 추천/비추천 버튼 */}
+          <div className="mt-8 pt-6 border-t border-gray-200 flex justify-center">
+            <ReactionButtons target="posts" id={post.id} />
+          </div>
 
           {isAuthor && (
             <div className="flex justify-end gap-3 mt-6">

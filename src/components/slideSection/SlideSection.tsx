@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import "keen-slider/keen-slider.min.css";
@@ -37,11 +36,11 @@ export const SlideSection = ({ title, description, items }: SlideSectionProps) =
       <div ref={sliderRef} className="keen-slider">
         {items.map(item => (
           <div key={item.id} className="keen-slider__slide">
-            <div className="w-full rounded-lg overflow-hidden shadow-md bg-white">
-              <img src={item.imageUrl} alt={item.title} className="w-full h-48 object-cover" />
-              <div className="p-4">
-                <h3 className="text-base font-semibold">{item.title}</h3>
-              </div>
+            <div className="w-full rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-10 shadow-md flex flex-col justify-center items-center min-h-[200px]">
+              <p className="text-center text-lg font-semibold leading-relaxed max-w-3xl">
+                {item.title}
+              </p>
+              <span className="mt-4 text-sm text-white/80">- {item.author}</span>
             </div>
           </div>
         ))}

@@ -13,13 +13,10 @@ export const navLinks: NavLink[] = [
     href: "/hot",
     dropdown: [
       { name: "핫게시글", href: "/hot" },
-      { name: "인기댓글", href: "/hot/comments" },
+      { name: "핫태그", href: "/hot/comments" },
     ],
   },
-  {
-    name: "칭찬판",
-    href: "/praise",
-  },
+
   {
     name: "비판",
     href: "/criticism",

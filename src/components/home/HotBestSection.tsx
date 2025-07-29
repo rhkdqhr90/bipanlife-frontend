@@ -16,6 +16,7 @@ interface HotBestSectionProps {
 }
 
 export const HotBestSection = ({ title, description, items }: HotBestSectionProps) => {
+  console.log("🔥 HotBestSection items:", items);
   return (
     <div className="bg-white rounded-xl shadow-md p-6 h-full flex flex-col">
       {/* 제목 + 더보기 */}

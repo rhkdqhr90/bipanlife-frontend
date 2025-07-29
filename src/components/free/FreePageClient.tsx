@@ -42,63 +42,62 @@ export const FreePageClient = ({ type, query, currentPage }: Props) => {
       ?.dropdown?.find(item => item.href === `/free/${type}`)?.name ?? "자유게시판";
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-6 py-5 border-b">
-            <h1 className="text-2xl font-bold">{freeTitle}</h1>
-            <p className="text-sm text-gray-500 mt-1">총 {totalElements}개</p>
+    <div className="bg-gray-50 min-h-screen py-16 px-6 sm:px-10 lg:px-16">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-xl shadow-md border border-gray-200">
+          {/* 헤더 */}
+          <div className="px-8 py-6 border-b border-gray-200">
+            <h1 className="text-2xl font-bold text-gray-900">{freeTitle}</h1>
+            <p className="text-sm text-gray-500 mt-2">총 {totalElements}개</p>
           </div>
 
+          {/* 테이블 */}
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="w-full table-fixed text-sm text-left">
+              <thead className="bg-gray-100 text-gray-700 font-semibold border-b">
                 <tr>
-                  <th className="px-6 py-3 text-xs text-gray-500 text-center">번호</th>
-                  <th className="px-6 py-3 text-xs text-gray-500 text-left">제목</th>
-                  <th className="px-6 py-3 text-xs text-gray-500 text-center">작성자</th>
-                  <th className="px-6 py-3 text-xs text-gray-500 text-center">작성일</th>
-                  <th className="px-6 py-3 text-xs text-gray-500 text-center">조회수</th>
-                  <th className="px-6 py-3 text-xs text-gray-500 text-center">추천</th>
+                  <th className="w-[8%] py-4 text-center">번호</th>
+                  <th className="w-[52%] py-4">제목</th>
+                  <th className="w-[13%] py-4 text-center">작성자</th>
+                  <th className="w-[13%] py-4 text-center">작성일</th>
+                  <th className="w-[7%] py-4 text-center">조회</th>
+                  <th className="w-[7%] py-4 text-center">추천</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-100">
                 {posts.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={6} className="py-16 text-center text-gray-500">
                       {query
                         ? `'${query}'에 대한 검색 결과가 없습니다.`
-                        : "등록된 게시물 이 없습니다."}
+                        : "📭 등록된 게시물이 없습니다."}
                     </td>
                   </tr>
                 ) : (
                   posts.map((post, index) => (
-                    <tr key={post.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-center text-sm text-gray-500">
+                    <tr key={post.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="py-4 text-center text-gray-500 font-medium">
                         {totalElements - (currentPage - 1) * 10 - index}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        <div className="flex items-center space-x-2">
-                          <Link href={`/free/${type}/${post.id}`} className="hover:underline">
-                            {post.title}
-                          </Link>
-                          {post.commentCount >= 0 && (
-                            <div className="text-gray-500 text-sm flex-shrink-0">
-                              [{post.commentCount}]
-                            </div>
+                      <td className="py-4">
+                        <Link
+                          href={`/free/${type}/${post.id}`}
+                          className={`flex items-center space-x-2 hover:underline text-gray-900 ${
+                            post.commentCount > 0 ? "font-semibold" : ""
+                          }`}
+                        >
+                          <span className="truncate">{post.title}</span>
+                          {post.commentCount > 0 && (
+                            <span className="text-gray-500 text-sm">[{post.commentCount}]</span>
                           )}
-                        </div>
+                        </Link>
                       </td>
-                      <td className="px-6 py-4 text-center text-sm text-gray-500">
-                        {post.authorNickname}
-                      </td>
-                      <td className="px-6 py-4 text-center text-sm text-gray-500">
+                      <td className="py-4 text-center text-gray-600">{post.authorNickname}</td>
+                      <td className="py-4 text-center text-gray-600">
                         {formatDateTime(post.createdAt)}
                       </td>
-                      <td className="px-6 py-4 text-center text-sm text-gray-500">
-                        {post.viewCount}
-                      </td>
-                      <td className="px-6 py-4 text-center text-sm text-gray-500">
+                      <td className="py-4 text-center text-gray-600">{post.viewCount}</td>
+                      <td className="py-4 text-center text-red-500 font-semibold">
                         {post.likeCount}
                       </td>
                     </tr>
@@ -108,17 +107,20 @@ export const FreePageClient = ({ type, query, currentPage }: Props) => {
             </table>
           </div>
 
-          <div className="px-6 py-4 border-t">
+          {/* 하단 */}
+          <div className="px-8 py-8 border-t border-gray-200">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               basePath={`/free/${type}`}
             />
-            <SearchControls
-              query={query}
-              basePath={`/free/${type}`}
-              writePath={`/free/${type}/write`}
-            />
+            <div className="mt-6 flex justify-between">
+              <SearchControls
+                query={query}
+                basePath={`/free/${type}`}
+                writePath={`/free/${type}/write`}
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@
 export interface PostComment {
   id: number;
   parentId: number | null;
+  authorId: number;
   authorNickName: string;
   content: string;
   likeCount: number;

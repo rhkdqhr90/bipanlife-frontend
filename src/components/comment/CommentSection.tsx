@@ -6,6 +6,7 @@ import { CommentForm } from "./CommentForm";
 import { CommentList } from "./CommentList";
 import { PostComment } from "@/types/comment";
 import { fetchComments, postComment, updateComment, deleteComment } from "@/lib/apis/comments";
+import { useUserStore } from "@/stores/userStore";
 
 interface CommentSectionProps {
   postId: number;
@@ -14,6 +15,7 @@ interface CommentSectionProps {
 export const CommentSection = ({ postId }: CommentSectionProps) => {
   const [comments, setComments] = useState<PostComment[]>([]);
   const [loading, setLoading] = useState(true);
+  const userInfo = useUserStore(state => state.userInfo);
 
   const loadComments = async () => {
     try {
@@ -33,6 +35,15 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
 
   const handleAddComment = async (content: string, parentId?: number) => {
     try {
+      if (!userInfo) {
+        alert("댓글을 작성하려면 로그인해야 합니다.");
+        return;
+      }
+
+      if (content.trim().length === 0) {
+        alert("내용을 입력해주세요.");
+        return;
+      }
       await postComment(postId, content, parentId);
       await loadComments();
     } catch (err) {

@@ -1,47 +1,37 @@
 "use client";
 
 import { formatDateTime } from "@/utils/data";
-import { useEffect, useState } from "react";
-import { Pagination } from "../common/Pagination";
+import { Pagination } from "@/components/common/Pagination";
+import { SearchControls } from "@/components/common/SearchControls";
+import Link from "next/link";
 import { PostListItem } from "@/types/PostListItem";
-import { fetchPostsByBoardId } from "@/lib/apis/posts";
+import { Page } from "@/lib/apis/posts";
+import { NavLink } from "@/types/MenuItem";
+import { AverageRatingDisplay } from "../rating/AverageRating";
 
-import { SearchControls } from "../common/SearchControls";
-
-interface Props {
-  query: string;
-  currentPage: number;
+interface PostListPageProps {
+  boardName: string;
+  boardCode: string;
+  page: number;
+  postList: Page<PostListItem> | null; // null 허용
+  navLinks: NavLink[];
+  errorMessage?: string;
 }
 
-export const HumorPageClient = ({ query, currentPage }: Props) => {
-  const [posts, setPosts] = useState<PostListItem[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalElements, setTotalElements] = useState(0);
-  const pageSize = 10;
-  const boardId = 10;
-
-  useEffect(() => {
-    const load = async () => {
-      if (boardId === null || isNaN(boardId)) {
-        console.error("유효하지 않은 boardId입니다.");
-        return; // boardId가 null이거나 NaN이면 함수 종료
-      }
-      try {
-        const { content, totalPages, totalElements } = await fetchPostsByBoardId(
-          boardId,
-          currentPage,
-          pageSize,
-          query,
-        );
-        setPosts(content);
-        setTotalPages(totalPages);
-        setTotalElements(totalElements);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    load();
-  }, [boardId, currentPage, pageSize, query]);
+export function PostListPage({
+  boardName,
+  boardCode,
+  page,
+  postList,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  navLinks,
+  errorMessage,
+}: PostListPageProps) {
+  const posts = postList?.content ?? [];
+  console.log(posts);
+  const totalPages = postList?.totalPages ?? 1;
+  const totalElements = postList?.totalElements ?? 0;
+  const pageSize = postList?.size ?? 10;
 
   return (
     <div className="bg-gray-50 min-h-screen py-16 px-6 sm:px-10 lg:px-16">
@@ -49,7 +39,7 @@ export const HumorPageClient = ({ query, currentPage }: Props) => {
         <div className="bg-white rounded-xl shadow-md border border-gray-200">
           {/* 헤더 */}
           <div className="px-8 py-6 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-800">유머 게시판</h1>
+            <h1 className="text-2xl font-bold text-gray-800">{boardName}</h1>
             <p className="text-sm text-gray-500 mt-2">총 {totalElements}개</p>
           </div>
 
@@ -59,30 +49,40 @@ export const HumorPageClient = ({ query, currentPage }: Props) => {
               <thead className="bg-gray-100 text-gray-700 font-semibold border-b">
                 <tr>
                   <th className="w-[8%] py-4 text-center">번호</th>
-                  <th className="w-[52%] py-4">제목</th>
-                  <th className="w-[13%] py-4 text-center">작성자</th>
-                  <th className="w-[13%] py-4 text-center">작성일</th>
+                  <th className="w-[50%] py-4">제목</th>
+                  <th className="w-[7%] py-4 text-center">별점</th>
+                  <th className="w-[10%] py-4 text-center">작성자</th>
+                  <th className="w-[11%] py-4 text-center">작성일</th>
                   <th className="w-[7%] py-4 text-center">조회</th>
                   <th className="w-[7%] py-4 text-center">추천</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
-                {posts.length > 0 ? (
+                {errorMessage ? (
+                  <tr>
+                    <td colSpan={6} className="py-16 text-center text-red-500 font-medium">
+                      {errorMessage}
+                    </td>
+                  </tr>
+                ) : posts.length > 0 ? (
                   posts.map((post, index) => (
                     <tr key={post.id} className="hover:bg-gray-50 transition-colors">
                       <td className="py-4 text-center text-gray-500 font-medium">
-                        {totalElements - index - (currentPage - 1) * pageSize}
+                        {totalElements - index - (page - 1) * pageSize}
                       </td>
                       <td className="py-4">
-                        <a
-                          href={`/humor/${post.id}`}
+                        <Link
+                          href={`/${boardCode}/${post.id}`}
                           className={`flex items-center space-x-2 hover:underline}`}
                         >
                           <span className="truncate">{post.title}</span>
                           {post.commentCount > 0 && (
                             <span className="text-gray-500 text-sm">[{post.commentCount}]</span>
                           )}
-                        </a>
+                        </Link>
+                      </td>
+                      <td className="py-4 text-center">
+                        <AverageRatingDisplay ratings={post.ratings} />
                       </td>
                       <td className="py-4 text-center text-gray-600">{post.authorNickname}</td>
                       <td className="py-4 text-center text-gray-600">
@@ -109,13 +109,21 @@ export const HumorPageClient = ({ query, currentPage }: Props) => {
 
           {/* 하단 */}
           <div className="px-8 py-8 border-t border-gray-200">
-            <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/humor" />
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              basePath={`/critic/${boardCode}`}
+            />
             <div className="mt-6 flex justify-between">
-              <SearchControls query={query} basePath="/humor" writePath="/humor/write" />
+              <SearchControls
+                query=""
+                basePath={`/${boardCode}`}
+                writePath={`/${boardCode}/write`}
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
+}

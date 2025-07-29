@@ -3,10 +3,12 @@
 
 import React from "react";
 import { Eye } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export interface HotNowItem {
   id: number;
   title: string;
+  boardCode: string;
   tag: string;
   timeAgo: string;
   views: number;
@@ -19,6 +21,7 @@ export interface HotNowSectionProps {
 }
 
 export const HotNowSection: React.FC<HotNowSectionProps> = ({ title, description, items }) => {
+  const router = useRouter();
   return (
     <div className="bg-white rounded-xl p-6 shadow h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
@@ -30,7 +33,11 @@ export const HotNowSection: React.FC<HotNowSectionProps> = ({ title, description
       {description && <p className="text-sm text-gray-500 mb-4">{description}</p>}
       <ul className="space-y-4 flex-grow">
         {items.map(item => (
-          <li key={item.id} className="flex justify-between items-start">
+          <li
+            key={item.id}
+            onClick={() => router.push(`/${item.boardCode}/${item.id}`)}
+            className="flex justify-between items-start"
+          >
             <div className="space-y-1">
               <p className="text-sm font-medium hover:underline cursor-pointer">{item.title}</p>
               <div className="text-xs text-gray-500 space-x-2">

@@ -53,6 +53,16 @@ const FreeWritePage = () => {
   };
 
   const handleSubmit = async () => {
+    if (!title.trim()) {
+      alert("제목을 입력해주세요.");
+      return;
+    }
+
+    if (!content.trim()) {
+      alert("본문 내용을 입력해주세요.");
+      return;
+    }
+
     try {
       const body: Record<string, unknown> = {
         boardId,

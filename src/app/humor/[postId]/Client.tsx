@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "next/navigation";
+import { ReactionButtons } from "@/components/common/ReactionButton";
 interface PostDetail {
   id: number;
   title: string;
@@ -35,7 +36,7 @@ export default function HumorPostDetailClient() {
   const [post, setPost] = useState<PostDetail | null>(null);
   const [comments, setComments] = useState<PostComment[]>([]);
   const userInfo = useUserStore(state => state.userInfo);
-  const isAuthor = userInfo?.userId === post?.authorId;
+  const isAuthor = userInfo !== null && userInfo.id === post?.authorId;
   const router = useRouter();
 
   const fetchPost = async () => {
@@ -148,6 +149,10 @@ export default function HumorPostDetailClient() {
 
           {/* 본문 내용 */}
           <HtmlWithPresignedImages html={post.content} />
+          {/* 추천/비추천 버튼 */}
+          <div className="mt-8 pt-6 border-t border-gray-200 flex justify-center">
+            <ReactionButtons target="posts" id={post.id} />
+          </div>
           {isAuthor && (
             <div className="flex justify-end gap-3 mt-6">
               <button

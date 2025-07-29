@@ -1,4 +1,5 @@
-import { PostListItem } from "@/types/PostListItem";
+import { PostCreateRequestDto } from "@/types/Critic";
+import { PostListItem, PostListWithBoardName, PostDetail } from "@/types/PostListItem";
 
 interface CreatePostRequest {
   boardId: number;
@@ -55,7 +56,7 @@ export async function getPostListByBoardCode(
   boardCode: string,
   page: number = 0,
   size: number = 10,
-): Promise<Page<PostListItem> | null> {
+): Promise<PostListWithBoardName | null> {
   const encoded = encodeURIComponent(boardCode);
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?boardCode=${encoded}&page=${page}&size=${size}`;
 
@@ -66,20 +67,22 @@ export async function getPostListByBoardCode(
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
-    const data = await res.json();
 
     if (!res.ok) {
       console.error("❌ fetch 실패. status:", res.status);
-      return null; // 실패 시 null 반환
+      const errorText = await res.text();
+      console.error("❌ 에러 내용:", errorText);
+      return null;
     }
 
-    return data;
+    const data = await res.json();
+    console.log(data);
+    return data as PostListWithBoardName;
   } catch (err) {
     console.error("🔥 예외 발생:", err);
-    return null; // 네트워크 오류 등
+    return null;
   }
 }
-
 export async function fetchPostsByBoardId(
   boardId: number,
   page: number = 1,
@@ -108,3 +111,40 @@ export async function fetchPostsByBoardId(
 
   return res.json();
 }
+
+export const createCriticPost = async (data: PostCreateRequestDto) => {
+  const response = await fetch("/api/posts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", // ✅ withCredentials에 해당
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`게시글 생성 실패: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+export const getCriticPostDetail = async (postId: string): Promise<PostDetail> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    cache: "no-store", // SSR 시 항상 fresh 데이터 가져오도록
+  });
+
+  if (!res.ok) {
+    console.error("❌ 게시글 상세 조회 실패:", res.status);
+    const errText = await res.text();
+    throw new Error(`게시글 불러오기 실패: ${errText}`);
+  }
+
+  const data = await res.json();
+  return data as PostDetail;
+};

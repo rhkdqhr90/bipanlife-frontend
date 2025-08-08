@@ -4,16 +4,18 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Header from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { SideFloatingMenu } from "@/components/home/SideFloationMenu";
-
 import { SubMenuWrapper } from "@/components/layout/Menu/SubMenuWarrper";
 import { getPanels } from "@/lib/apis/getPanels";
+import { SideFloatingMenuWrapper } from "@/components/home/SideFloatingMenuWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "비판생 - 건강한 비판의 시작",
   description: "의미 있는 토론과 비판의 공간",
+  icons: {
+    icon: "/favicon.ico", // public 경로 기준
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -27,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <SubMenuWrapper navLinks={navLinks} />
           <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-6">{children}</main>
           <Footer />
-          <SideFloatingMenu />
+          <SideFloatingMenuWrapper />
         </div>
       </body>
     </html>

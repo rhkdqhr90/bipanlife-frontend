@@ -2,7 +2,7 @@
 
 import React from "react";
 
-export const LoginPage = () => {
+export default function LoginPage() {
   const handleOAuthLogin = (provider: "google" | "kakao" | "naver") => {
     const searchParams = new URLSearchParams(window.location.search);
     const rawRedirectUri = searchParams.get("redirectUri");
@@ -52,6 +52,4 @@ export const LoginPage = () => {
       </div>
     </div>
   );
-};
-
-export default LoginPage;
+}

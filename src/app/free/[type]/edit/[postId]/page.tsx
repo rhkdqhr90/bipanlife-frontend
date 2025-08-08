@@ -80,7 +80,7 @@ const FreeEditPage = () => {
 
   useEffect(() => {
     if (post && userInfo) {
-      if (userInfo.userId !== post.authorId) {
+      if (userInfo.id !== post.authorId) {
         alert("권한이 없습니다.");
         router.replace("/humor");
       }

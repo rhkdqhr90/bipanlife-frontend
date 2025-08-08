@@ -1,9 +1,9 @@
 // ✅ src/app/free/[type]/page.tsx
 import { FreePageClient } from "@/components/free/FreePageClient";
+import { VALID_TYPES } from "@/types/freetype";
 import { notFound } from "next/navigation";
 import { use } from "react";
 
-export const VALID_TYPES = ["general", "life", "hobby"] as const;
 export type FreeType = (typeof VALID_TYPES)[number];
 interface Props {
   params: Promise<{ type: string }>;

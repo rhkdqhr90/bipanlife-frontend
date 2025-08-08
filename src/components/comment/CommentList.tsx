@@ -66,7 +66,6 @@ export const CommentList = ({
       <div className="p-6 space-y-6">
         {topLevel.map((comment, index) => {
           const isAuthor = userInfo?.id === comment.authorId;
-          console.log(userInfo);
           return (
             <div
               key={comment.id}
@@ -95,24 +94,25 @@ export const CommentList = ({
                       {comment.authorNickName.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-grow min-w-0">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-grow">
-                          <div className="flex items-center space-x-2">
-                            <span className="font-semibold text-gray-900 text-sm">
-                              {comment.authorNickName}
-                            </span>
-                          </div>
-                          <span className="text-gray-500 text-xs">
+                      <div className="flex justify-between items-start flex-col sm:flex-row gap-2">
+                        {/* 왼쪽: 작성자 + 날짜 */}
+                        <div className="flex items-center gap-2 flex-wrap min-w-0">
+                          <span className="font-semibold text-gray-900 text-sm break-all">
+                            {comment.authorNickName}
+                          </span>
+                          <span className="text-gray-500 text-xs whitespace-nowrap">
                             {new Date(comment.createdAt).toLocaleString("ko-KR", {
                               year: "numeric",
-                              month: "short",
+                              month: "long",
                               day: "numeric",
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
                           </span>
                         </div>
-                        <div className="flex items-center space-x-1">
+
+                        {/* 오른쪽: 버튼 그룹 */}
+                        <div className="flex flex-wrap gap-2 sm:mt-0">
                           <button
                             onClick={() =>
                               setReplyToId(replyToId === comment.id ? null : comment.id)
@@ -126,6 +126,7 @@ export const CommentList = ({
                           >
                             {replyToId === comment.id ? "취소" : "답글"}
                           </button>
+
                           {isAuthor && (
                             <>
                               <button
@@ -174,38 +175,40 @@ export const CommentList = ({
                         </div>
                       ) : (
                         <>
-                          <div
-                            className={clsx(
-                              "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow-md ring-2 ring-white",
-                              getAvatarColor(child.authorNickName),
-                            )}
-                          >
-                            {child.authorNickName.charAt(0).toUpperCase()}
-                          </div>
-                          <div className="flex-grow min-w-0">
-                            <div className="flex justify-between items-start">
-                              <div className="flex-grow">
-                                <div className="flex items-center space-x-2">
-                                  <span className="font-medium text-gray-900 text-sm">
+                          <div className="flex space-x-4">
+                            <div
+                              className={clsx(
+                                "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow-md ring-2 ring-white",
+                                getAvatarColor(child.authorNickName),
+                              )}
+                            >
+                              {child.authorNickName.charAt(0).toUpperCase()}
+                            </div>
+
+                            <div className="flex-grow min-w-0">
+                              {/* 작성자 + 날짜 + 답글 뱃지 */}
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-1">
+                                <div className="flex items-center gap-2 flex-wrap min-w-0">
+                                  <span className="font-medium text-gray-900 text-sm break-all">
                                     {child.authorNickName}
+                                  </span>
+                                  <span className="text-gray-500 text-xs whitespace-nowrap">
+                                    {new Date(child.createdAt).toLocaleString("ko-KR", {
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
                                   </span>
                                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                     답글
                                   </span>
                                 </div>
-                                <span className="text-gray-500 text-xs">
-                                  {new Date(child.createdAt).toLocaleString("ko-KR", {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </span>
-                              </div>
-                              <div className="flex items-center space-x-1">
+
+                                {/* 수정/삭제 버튼 */}
                                 {isChildAuthor && (
-                                  <>
+                                  <div className="flex gap-2 mt-1 sm:mt-0">
                                     <button
                                       onClick={() => setEditingId(child.id)}
                                       className="px-2 py-1 text-xs font-medium text-green-600 hover:text-green-800 hover:bg-green-50 rounded-md border border-green-200 hover:border-green-300"
@@ -218,14 +221,16 @@ export const CommentList = ({
                                     >
                                       삭제
                                     </button>
-                                  </>
+                                  </div>
                                 )}
                               </div>
-                            </div>
-                            <div className="mt-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                              <p className="text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">
-                                {child.content}
-                              </p>
+
+                              {/* 댓글 내용 */}
+                              <div className="mt-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <p className="text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">
+                                  {child.content}
+                                </p>
+                              </div>
                             </div>
                           </div>
                         </>

@@ -38,15 +38,16 @@ export function SearchControls({
   };
 
   return (
-    <div className="flex items-center mt-6 w-full">
-      <div className="flex justify-center flex-grow">
-        <div className="flex items-center">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 w-full">
+      {/* 가운데 정렬을 위한 래퍼 */}
+      <div className="flex justify-center w-full sm:flex-1">
+        <div className="flex w-full max-w-md">
           <input
             type="text"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="검색어 입력..."
-            className="border border-gray-300 rounded-l-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-grow border border-gray-300 rounded-l-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             type="button"
@@ -57,12 +58,14 @@ export function SearchControls({
           </button>
         </div>
       </div>
+
+      {/* 글쓰기 버튼 */}
       {showWriteButton && userInfo && writePath && (
         <button
           onClick={() => router.push(writePath)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm ml-auto"
+          className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
         >
-          글쓰기
+          ✏️ 글쓰기
         </button>
       )}
     </div>

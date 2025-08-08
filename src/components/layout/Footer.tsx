@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Facebook, Twitter, Instagram, Mail, Phone } from "lucide-react";
+import Link from "next/link";
+import { Facebook, Twitter, Instagram, Mail } from "lucide-react";
 
 export const Footer: React.FC = () => {
   return (
@@ -12,9 +13,15 @@ export const Footer: React.FC = () => {
           <h2 className="text-white text-2xl font-bold mb-3">BipanLife</h2>
           <p className="mb-4 text-gray-400">더 나은 소비 결정을 위한 비판적 리뷰 플랫폼</p>
           <div className="flex space-x-4">
-            <Facebook className="w-5 h-5 text-gray-400 hover:text-white" />
-            <Twitter className="w-5 h-5 text-gray-400 hover:text-white" />
-            <Instagram className="w-5 h-5 text-gray-400 hover:text-white" />
+            <a href="https://www.facebook.com/bipanlife" target="_blank" rel="noopener noreferrer">
+              <Facebook className="w-5 h-5 text-gray-400 hover:text-white" />
+            </a>
+            <a href="https://twitter.com/bipanlife" target="_blank" rel="noopener noreferrer">
+              <Twitter className="w-5 h-5 text-gray-400 hover:text-white" />
+            </a>
+            <a href="https://www.instagram.com/bipanlife" target="_blank" rel="noopener noreferrer">
+              <Instagram className="w-5 h-5 text-gray-400 hover:text-white" />
+            </a>
           </div>
         </div>
 
@@ -22,11 +29,21 @@ export const Footer: React.FC = () => {
         <div>
           <h3 className="text-white text-lg font-semibold mb-3">카테고리</h3>
           <ul className="space-y-2">
-            <li>핫판</li>
-            <li>비판</li>
-            <li>칭찬</li>
-            <li>토론방</li>
-            <li>자유게시판</li>
+            <li>
+              <Link href="/hot">핫판</Link>
+            </li>
+            <li>
+              <Link href="/critic">비판</Link>
+            </li>
+            <li>
+              <Link href="/praise">칭찬</Link>
+            </li>
+            <li>
+              <Link href="/chat">토론방</Link>
+            </li>
+            <li>
+              <Link href="/free">자유게시판</Link>
+            </li>
           </ul>
         </div>
 
@@ -34,11 +51,21 @@ export const Footer: React.FC = () => {
         <div>
           <h3 className="text-white text-lg font-semibold mb-3">이용 안내</h3>
           <ul className="space-y-2">
-            <li>이용약관</li>
-            <li>개인정보처리방침</li>
-            <li>커뮤니티 가이드라인</li>
-            <li>토론방 이용 규칙</li>
-            <li>자주 묻는 질문</li>
+            <li>
+              <Link href="/notice/terms">이용약관</Link>
+            </li>
+            <li>
+              <Link href="/notice/privacy">개인정보처리방침</Link>
+            </li>
+            <li>
+              <Link href="/notice/guideline">커뮤니티 가이드라인</Link>
+            </li>
+            <li>
+              <Link href="/notice/chat-rules">토론방 이용 규칙</Link>
+            </li>
+            <li>
+              <Link href="/notice/faq">자주 묻는 질문</Link>
+            </li>
           </ul>
         </div>
 
@@ -48,16 +75,18 @@ export const Footer: React.FC = () => {
           <ul className="space-y-3 text-gray-400">
             <li className="flex items-center space-x-2">
               <Mail className="w-4 h-4" />
-              <span>contact@bipanlife.com</span>
+              <span>rhkdqhr09@naver.com</span>
             </li>
-            <li className="flex items-center space-x-2">
+            {/* <li className="flex items-center space-x-2">
               <Phone className="w-4 h-4" />
-              <span>02-123-4567</span>
-            </li>
+              <span>0</span>
+            </li> */}
             <li>
-              <button className="bg-indigo-500 text-white py-1 px-4 rounded hover:bg-indigo-600 text-sm">
-                제휴 문의하기
-              </button>
+              <Link href="/partner">
+                <button className="bg-indigo-500 text-white py-1 px-4 rounded hover:bg-indigo-600 text-sm">
+                  제휴 문의하기
+                </button>
+              </Link>
             </li>
           </ul>
         </div>
@@ -68,11 +97,6 @@ export const Footer: React.FC = () => {
         <p className="text-xs">
           © 2025 BipanLife - 비판과 토론을 위한 커뮤니티. All rights reserved.
         </p>
-        <div className="flex space-x-4 mt-2 md:mt-0">
-          <img src="/icons/visa.svg" alt="Visa" className="h-5" />
-          <img src="/icons/mastercard.svg" alt="MasterCard" className="h-5" />
-          <img src="/icons/paypal.svg" alt="PayPal" className="h-5" />
-        </div>
       </div>
     </footer>
   );

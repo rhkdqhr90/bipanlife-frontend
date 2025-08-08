@@ -2,16 +2,47 @@
 "use client";
 
 import React from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Pencil, Search, RotateCcw, ArrowUp } from "lucide-react";
 
-export const SideFloatingMenu = () => {
+interface SideFloatingMenuProps {
+  writePath?: string;
+  userInfo?: {
+    nickname: string;
+  } | null;
+  showWriteButton?: boolean; // ❌ 기본값 X, 타입만 정의
+}
+
+export const SideFloatingMenu = ({
+  writePath,
+  userInfo,
+  showWriteButton = true,
+}: SideFloatingMenuProps) => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const handleWriteClick = () => {
+    if (!userInfo || !userInfo.nickname) {
+      alert("로그인 후 이용해주세요.");
+      router.push(`/login?redirectUri=${encodeURIComponent(pathname)}`);
+      return;
+    }
+
+    if (writePath) {
+      router.push(writePath);
+    }
+  };
   return (
     <>
       {/* ✅ 데스크탑용 사이드 고정 메뉴 */}
       <div className="hidden lg:flex flex-col gap-3 fixed top-[150px] z-50 lg:right-6 xl:right-[calc((100vw-1280px)/2-24px)]">
-        <button className="bg-white shadow-md p-3 rounded-full hover:bg-gray-100 transition">
-          <Pencil className="w-5 h-5 text-gray-700" />
-        </button>
+        {showWriteButton && (
+          <button
+            className="bg-white shadow-md p-3 rounded-full hover:bg-gray-100 transition"
+            onClick={handleWriteClick}
+          >
+            <Pencil className="w-5 h-5 text-gray-700" />
+          </button>
+        )}
         <button className="bg-white shadow-md p-3 rounded-full hover:bg-gray-100 transition">
           <Search className="w-5 h-5 text-gray-700" />
         </button>

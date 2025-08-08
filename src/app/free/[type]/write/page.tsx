@@ -1,3 +1,4 @@
+// app/free/[type]/write/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -99,43 +100,44 @@ const FreeWritePage = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="p-8 prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-full">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            {boardName ? `${boardName} 작성` : "게시판 작성"}
-          </h1>
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden px-6 sm:px-8 py-10">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">
+          {boardName ? `${boardName} 작성` : "게시판 작성"}
+        </h1>
 
-          <input
-            type="text"
-            placeholder="제목을 입력하세요"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            className="w-full text-2xl font-semibold border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-blue-500 pb-2 mb-6 bg-transparent"
-          />
+        {/* 제목 입력 */}
+        <input
+          type="text"
+          placeholder="제목을 입력하세요"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          className="w-full text-2xl font-semibold border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-blue-500 pb-3 mb-8 bg-transparent"
+        />
 
+        {/* 본문 에디터 */}
+        <div className="mt-10 prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-full">
           <TiptapEditor content={content} onChange={setContent} onSelectLocation={handleLocation} />
+        </div>
 
-          {/* 📍 지도 출력 */}
-          {location && (
-            <div className="mt-6">
-              <div className="mt-4">
-                <KakaoMapViewer
-                  latitude={location.latitude}
-                  longitude={location.longitude}
-                  placeName={location.placeName}
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="flex justify-end mt-8">
-            <button
-              onClick={handleSubmit}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-semibold"
-            >
-              등록
-            </button>
+        {/* 지도 출력 */}
+        {location && (
+          <div className="mt-10">
+            <KakaoMapViewer
+              latitude={location.latitude}
+              longitude={location.longitude}
+              placeName={location.placeName}
+            />
           </div>
+        )}
+
+        {/* 등록 버튼 */}
+        <div className="flex justify-end mt-10">
+          <button
+            onClick={handleSubmit}
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-semibold"
+          >
+            등록
+          </button>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ export interface HomePageProps {
   }[];
   hotBestItems: {
     id: number;
+    boardCode: string;
     title: string;
     imageUrl: string;
   }[];
@@ -24,6 +25,7 @@ export interface SlideItem {
 
 export interface HotBestItem {
   id: number;
+  boardCode: string;
   title: string;
   imageUrl: string;
 }

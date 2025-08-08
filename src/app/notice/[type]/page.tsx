@@ -1,15 +1,7 @@
 // ✅ src/app/notice/[type]/page.tsx
 import { NoticePageClient } from "@/components/notice/NoticePageClient";
+import { VALID_TYPES } from "@/types/notice";
 import { notFound } from "next/navigation";
-
-export const VALID_TYPES = [
-  "notice",
-  "terms",
-  "privacy",
-  "guideline",
-  "discussion",
-  "faq",
-] as const;
 
 export type NoticeType = (typeof VALID_TYPES)[number];
 

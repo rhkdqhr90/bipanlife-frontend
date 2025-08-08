@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/stores/userStore.ts
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
@@ -9,6 +10,7 @@ interface UserInfo {
 }
 
 interface UserStore {
+  user: any;
   userInfo: UserInfo | null;
   setUser: (info: UserInfo) => void;
   logout: () => void;
@@ -18,6 +20,7 @@ interface UserStore {
 export const useUserStore = create<UserStore>()(
   persist(
     set => ({
+      user: null,
       userInfo: null,
       setUser: info => set({ userInfo: info }),
       logout: () => {

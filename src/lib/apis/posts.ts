@@ -56,9 +56,12 @@ export async function getPostListByBoardCode(
   boardCode: string,
   page: number = 0,
   size: number = 10,
+  query: string,
 ): Promise<PostListWithBoardName | null> {
   const encoded = encodeURIComponent(boardCode);
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?boardCode=${encoded}&page=${page}&size=${size}`;
+  const safeQuery = encodeURIComponent(query ?? "");
+
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?query=${safeQuery}&boardCode=${encoded}&page=${page}&size=${size}`;
 
   try {
     const res = await fetch(url, {
@@ -76,13 +79,13 @@ export async function getPostListByBoardCode(
     }
 
     const data = await res.json();
-    console.log(data);
     return data as PostListWithBoardName;
   } catch (err) {
     console.error("🔥 예외 발생:", err);
     return null;
   }
 }
+
 export async function fetchPostsByBoardId(
   boardId: number,
   page: number = 1,

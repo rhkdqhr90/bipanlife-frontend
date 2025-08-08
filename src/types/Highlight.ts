@@ -3,6 +3,7 @@ export interface HighlightItem {
   title: string;
   likes: number;
   comments: number;
+  boardCode: string; //
 }
 
 export interface HighlightColumnProps {

@@ -19,6 +19,7 @@ export async function getHotBestItems(): Promise<HotBestItem[]> {
     return data.slice(0, 4).map((item: any) => ({
       id: item.postId,
       title: item.title,
+      boardCode: item.boardCode,
       imageUrl: item.thumbnailUrl ?? "/images/default-thumb.jpg",
     }));
   } catch (error) {

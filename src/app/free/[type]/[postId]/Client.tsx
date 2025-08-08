@@ -37,9 +37,6 @@ export default function FreeDetailClient() {
   const [comments, setComments] = useState<PostComment[]>([]);
   const userInfo = useUserStore(state => state.userInfo);
   const isAuthor = userInfo?.id === post?.authorId;
-  console.log("userInfo", userInfo?.id);
-  console.log("post", post);
-  console.log("isAuthor", isAuthor);
 
   const router = useRouter();
 

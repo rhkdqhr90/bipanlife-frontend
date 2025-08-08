@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useState, useRef } from "react";
 import { useUserStore } from "@/stores/userStore";
 import { LogOut } from "lucide-react";
-import { useAuth } from "@/hooK/userAuth";
+import { useAuth } from "@/hook/userAuth";
 import { useRouter, usePathname } from "next/navigation";
 import { NavLink } from "@/types/MenuItem";
 
@@ -45,6 +45,18 @@ export const Header = ({ navLinks }: HeaderProps) => {
 
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isMobileMenuOpen]);
 
   const handleLogout = () => {
     logout();
@@ -153,7 +165,10 @@ export const Header = ({ navLinks }: HeaderProps) => {
             {isLoggedIn ? (
               <div className="flex items-center space-x-3">
                 <span className="text-sm text-gray-700">{userInfo.nickname}</span>
-                <span className="text-xl">👤</span>
+                <Link href="/mypage">
+                  <span className="text-xl">👤</span>
+                </Link>
+
                 <button
                   onClick={handleLogout}
                   className="text-gray-500 hover:text-red-500 transition"
@@ -179,10 +194,10 @@ export const Header = ({ navLinks }: HeaderProps) => {
         </div>
 
         {/* 모바일 햄버거 버튼 */}
-        <div className="md:hidden">
+        <div className="md:hidden fixed top-2 right-3 z-50">
           <button
             onClick={() => setIsMobileMenuOpen(prev => !prev)}
-            className="text-gray-600 hover:text-gray-900"
+            className="text-gray-600 hover:text-gray-900 p-2"
           >
             <svg
               className="w-6 h-6"
@@ -204,7 +219,7 @@ export const Header = ({ navLinks }: HeaderProps) => {
 
       {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white shadow-md px-4 pt-4 pb-6 space-y-4">
+        <div className="md:hidden fixed top-[64px] left-0 right-0 bg-white shadow-md px-4 pt-4 pb-6 space-y-4 z-50 max-h-[calc(100vh-64px)] overflow-y-auto">
           {navLinks.map(link => {
             const hasDropdown = Array.isArray(link.dropdown) && link.dropdown.length > 0;
             return (

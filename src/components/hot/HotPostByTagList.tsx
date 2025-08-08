@@ -3,12 +3,19 @@
 
 import { HotPostByTagResponse } from "@/types/hot";
 import Link from "next/link";
+import { useState } from "react";
 
 interface Props {
   posts: HotPostByTagResponse[];
 }
 
 export const HotPostByTagList = ({ posts }: Props) => {
+  const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
+
+  const handleImageError = (postId: number) => {
+    setFailedImages(prev => new Set(prev).add(postId));
+  };
+
   if (posts.length === 0) return <p className="text-gray-500">인기 태그 게시글이 없습니다.</p>;
 
   return (
@@ -18,11 +25,24 @@ export const HotPostByTagList = ({ posts }: Props) => {
           key={post.postId}
           className="flex border rounded-lg overflow-hidden shadow-sm hover:shadow transition"
         >
-          <img
-            src={post.thumbnailUrl || "/images/placeholder1.jpg"}
-            alt="썸네일"
-            className="w-32 h-24 object-cover"
-          />
+          {/* 이미지가 있고 로드에 실패하지 않은 경우에만 표시 */}
+          {post.thumbnailUrl &&
+            post.thumbnailUrl !== "/images/placeholder1.jpg" &&
+            !failedImages.has(post.postId) && (
+              <img
+                src={post.thumbnailUrl}
+                alt=""
+                className="w-32 h-24 object-cover"
+                onError={() => handleImageError(post.postId)}
+                onLoad={e => {
+                  // 이미지가 실제로 존재하지 않으면 숨김
+                  const img = e.target as HTMLImageElement;
+                  if (img.naturalWidth === 0) {
+                    handleImageError(post.postId);
+                  }
+                }}
+              />
+            )}
           <div className="p-3 flex flex-col justify-between flex-1">
             <div className="flex items-center justify-between mb-1 text-xs text-gray-500">
               <span>{post.tagName}</span>

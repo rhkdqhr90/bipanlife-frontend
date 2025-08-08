@@ -41,7 +41,6 @@ const HumorEditPage = () => {
       });
       if (!res.ok) throw new Error("게시물 로딩 실패");
       const data = await res.json();
-      console.log("불러온 post 내용:", data);
       setPost(data);
     } catch (err) {
       console.error(err);
@@ -81,7 +80,7 @@ const HumorEditPage = () => {
 
   useEffect(() => {
     if (post && userInfo) {
-      if (userInfo.userId !== post.authorId) {
+      if (userInfo.id !== post.authorId) {
         alert("권한이 없습니다.");
         router.replace("/humor");
       }

@@ -48,12 +48,14 @@ export const NoticePageClient = ({ type, query, currentPage }: Props) => {
     <div className="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white shadow rounded-lg">
+          {/* 헤더 */}
           <div className="px-6 py-5 border-b">
             <h1 className="text-2xl font-bold">{noticeTitle}</h1>
             <p className="text-sm text-gray-500 mt-1">총 {totalElements}개</p>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* 🖥 PC 테이블 */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -71,7 +73,7 @@ export const NoticePageClient = ({ type, query, currentPage }: Props) => {
                     <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                       {query
                         ? `'${query}'에 대한 검색 결과가 없습니다.`
-                        : "등록된 게시물 이 없습니다."}
+                        : "등록된 게시물이 없습니다."}
                     </td>
                   </tr>
                 ) : (
@@ -104,6 +106,34 @@ export const NoticePageClient = ({ type, query, currentPage }: Props) => {
             </table>
           </div>
 
+          {/* 📱 모바일 카드형 리스트 */}
+          <div className="md:hidden px-4 divide-y divide-gray-100">
+            {posts.length === 0 ? (
+              <div className="py-16 text-center text-gray-500">
+                {query ? `'${query}'에 대한 검색 결과가 없습니다.` : "📭 등록된 게시물이 없습니다."}
+              </div>
+            ) : (
+              posts.map(post => (
+                <div key={post.id} className="py-4">
+                  <Link href={`/notice/${type}/${post.id}`} className="block">
+                    <h2 className="font-semibold text-gray-800 text-base line-clamp-2">
+                      {post.title}
+                    </h2>
+                    <div className="text-sm text-gray-500 mt-1">
+                      <span className="mr-3">작성자: {post.authorNickname}</span>
+                      <span>{formatDateTime(post.createdAt)}</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1 flex gap-4">
+                      <span>조회 {post.viewCount}</span>
+                      <span className="text-red-500">추천 {post.likeCount}</span>
+                    </div>
+                  </Link>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* 하단 */}
           <div className="px-6 py-4 border-t">
             <Pagination
               currentPage={currentPage}

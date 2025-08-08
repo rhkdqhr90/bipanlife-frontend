@@ -105,13 +105,25 @@ export default function HumorPostDetailClient() {
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{post.title}</h1>
 
           {/* 메타 정보 */}
-          <div className="flex flex-wrap gap-3 text-sm text-gray-500 mb-6 border-b pb-4">
-            <span>작성자: {post.authorNickname}</span>
-            <span>작성일: {formatDateTime(post.createdAt)}</span>
-            <span>조회수: {post.viewCount}</span>
-            <span>추천: {post.likeCount}</span>
-            <span>비추천: {post.dislikeCount}</span>
-            <span>댓글: {post.commentCount}</span>
+          <div className="text-sm text-gray-600 mb-6 border-b pb-4">
+            {/* 작성자 줄 */}
+            <div className="flex flex-wrap sm:inline-flex sm:items-center sm:gap-4 mb-1">
+              <span className="font-medium text-gray-800">작성자:</span>
+              <span>{post.authorNickname}</span>
+            </div>
+
+            {/* 작성일 + 조회수 줄 */}
+            <div className="flex flex-wrap mr-2 sm:inline-flex sm:items-center sm:gap-4 mb-1">
+              <span>작성일: {formatDateTime(post.createdAt)}</span>
+              <span>조회수: {post.viewCount}</span>
+            </div>
+
+            {/* 추천 / 비추천 / 댓글 줄 */}
+            <div className="flex flex-wrap  sm:inline-flex sm:items-center sm:gap-4">
+              <span>👍 추천: {post.likeCount}</span>
+              <span>👎 비추천: {post.dislikeCount}</span>
+              <span>💬 댓글: {post.commentCount}</span>
+            </div>
           </div>
 
           {/* 장소 정보 */}
@@ -154,22 +166,21 @@ export default function HumorPostDetailClient() {
             <ReactionButtons target="posts" id={post.id} />
           </div>
           {isAuthor && (
-            <div className="flex justify-end gap-3 mt-6">
+            <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mt-6">
               <button
-                className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 w-full sm:w-auto"
                 onClick={() => router.push(`/humor/edit/${post.id}`)}
               >
                 ✏️ 수정
               </button>
               <button
-                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 w-full sm:w-auto"
                 onClick={handleDelete}
               >
                 🗑️ 삭제
               </button>
             </div>
           )}
-
           {/* 댓글 입력 */}
           <div className="mt-12">
             <CommentSection postId={post.id} />

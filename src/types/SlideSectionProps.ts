@@ -8,4 +8,3 @@ export interface SlideSectionProps {
   description?: string;
   items: SlideItem[];
 }
-

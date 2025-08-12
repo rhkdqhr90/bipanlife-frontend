@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "tailwind:init": "tailwindcss init -p",
-    "build:cf" : "npx @cloudflare/next-on-pages@1 build"
+    "build:cf" : "npx -y @cloudflare/next-on-pages@1"
   },
   "dependencies": {
     "@stomp/stompjs": "^7.1.1",

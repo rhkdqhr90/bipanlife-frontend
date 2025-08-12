@@ -1,6 +1,6 @@
 // app/free/[type]/write/page.tsx
 "use client";
-
+export const runtime = "edge";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TiptapEditor } from "@/components/editor/TiptapEditor";

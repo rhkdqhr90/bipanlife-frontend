@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import HomePage from "@/components/home/homePage";
 import { quoteSlides } from "@/components/image/slideItems";
 import { getHotBestItems, getHotNowItems } from "@/lib/apis/home";

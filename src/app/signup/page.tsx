@@ -1,5 +1,5 @@
 "use client";
-
+export const runtime = "edge";
 import { apiFetch } from "@/lib/apis/apiFetch";
 import { startOAuth } from "@/lib/apis/startOAuth";
 import React, { useEffect, useState } from "react";

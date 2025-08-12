@@ -1,3 +1,4 @@
+export const runtime = "edge";
 export default function StatusPage() {
   return (
     <main style={{ padding: 20 }}>

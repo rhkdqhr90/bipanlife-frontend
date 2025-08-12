@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 // app/critic/[boardType]/page.tsx
 import { Suspense } from "react";
 import { Metadata } from "next";

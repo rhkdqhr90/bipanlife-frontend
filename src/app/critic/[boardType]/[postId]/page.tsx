@@ -1,6 +1,6 @@
 // 📄 /app/critic/[boardType]/[postId]/page.tsx
 "use client";
-
+export const runtime = "edge";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { formatDateTime } from "@/utils/data";

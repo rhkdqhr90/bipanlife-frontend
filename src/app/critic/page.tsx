@@ -1,3 +1,4 @@
+export const runtime = "edge";
 // app/critic/page.tsx
 import { redirect } from "next/navigation";
 

@@ -1,3 +1,4 @@
+export const runtime = "edge";
 // ✅ src/app/notice/[type]/page.tsx
 import { NoticePageClient } from "@/components/notice/NoticePageClient";
 import { VALID_TYPES } from "@/types/notice";

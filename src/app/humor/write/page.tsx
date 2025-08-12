@@ -1,5 +1,5 @@
 "use client";
-
+export const runtime = "edge";
 import { TiptapEditor } from "@/components/editor/TiptapEditor";
 import { createPost } from "@/lib/apis/posts";
 import { useUserStore } from "@/stores/userStore";

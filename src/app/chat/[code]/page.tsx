@@ -1,5 +1,6 @@
-// app/chat/[code]/page.tsx
 "use client";
+export const runtime = "edge";
+// app/chat/[code]/page.tsx
 
 import { useParams } from "next/navigation";
 import { useEffect, useState, useCallback, useRef } from "react";

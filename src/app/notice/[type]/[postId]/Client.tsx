@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatDateTime } from "@/utils/data";
 import { KakaoMapViewer } from "@/components/map/KakaoMapViewer";
+import { apiFetch } from "@/lib/apis/apiFetch";
 
 interface PostDetail {
   id: number;
@@ -37,7 +38,7 @@ export default function NoticeDetailClient() {
           .find(row => row.startsWith("accessToken="))
           ?.split("=")[1];
 
-        const res = await fetch(`/api/posts/${postId}`, {
+        const res = await apiFetch(`/api/posts/${postId}`, {
           method: "GET",
           headers: {
             Authorization: token ? `Bearer ${token}` : "",

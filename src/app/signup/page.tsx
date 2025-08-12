@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/apis/apiFetch";
+import { startOAuth } from "@/lib/apis/startOAuth";
 import React, { useEffect, useState } from "react";
 
 const OAuth2SignUpPage = () => {
@@ -14,14 +16,14 @@ const OAuth2SignUpPage = () => {
 
   useEffect(() => {
     const fetchTerms = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/terms`);
+      const res = await apiFetch(`/api/terms`);
       if (res.ok) {
         const data = await res.json();
         setTermsContent(data.content); // HTML or Text
       }
     };
     const fetchPrivacy = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/privacy`);
+      const res = await apiFetch(`/api/privacy`);
       if (res.ok) {
         const data = await res.json();
         setprivacyContent(data.content); // HTML or Text
@@ -46,7 +48,7 @@ const OAuth2SignUpPage = () => {
       alert("약관에 동의 하셔야 가입이 가능합니다");
       return; // ❌ 미동의 시 차단
     }
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth2/authorization/${provider}`;
+    startOAuth(provider, "signup");
   };
 
   return (
@@ -62,12 +64,12 @@ const OAuth2SignUpPage = () => {
             네이버로 시작하기
           </button>
 
-          <button
+          {/* <button
             onClick={() => oauthLogin("kakao")}
             className="w-full py-2 rounded bg-yellow-300 text-black font-semibold hover:bg-yellow-400"
           >
             카카오로 시작하기
-          </button>
+          </button> */}
 
           <button
             onClick={() => oauthLogin("google")}

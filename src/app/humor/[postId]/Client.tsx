@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "next/navigation";
 import { ReactionButtons } from "@/components/common/ReactionButton";
+import { apiFetch } from "@/lib/apis/apiFetch";
 interface PostDetail {
   id: number;
   title: string;
@@ -41,7 +42,7 @@ export default function HumorPostDetailClient() {
 
   const fetchPost = async () => {
     try {
-      const res = await fetch(`/api/posts/${postId}`, {
+      const res = await apiFetch(`/api/posts/${postId}`, {
         method: "GET",
         credentials: "include",
       });
@@ -55,7 +56,7 @@ export default function HumorPostDetailClient() {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch(`/api/comments/posts/${postId}`, {
+      const res = await apiFetch(`/api/comments/posts/${postId}`, {
         method: "GET",
         credentials: "include",
       });
@@ -72,7 +73,7 @@ export default function HumorPostDetailClient() {
 
     try {
       if (post?.id == null) return;
-      const res = await fetch(`/api/posts/${post.id}`, {
+      const res = await apiFetch(`/api/posts/${post.id}`, {
         method: "DELETE",
         credentials: "include",
       });

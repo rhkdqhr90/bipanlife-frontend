@@ -1,5 +1,6 @@
 import { PostCreateRequestDto } from "@/types/Critic";
 import { PostListItem, PostListWithBoardName, PostDetail } from "@/types/PostListItem";
+import { apiFetch } from "./apiFetch";
 
 interface CreatePostRequest {
   boardId: number;
@@ -19,7 +20,7 @@ export interface Page<T> {
 }
 
 export async function createPost(data: CreatePostRequest) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`, {
+  const res = await apiFetch(`/api/posts`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -32,7 +33,7 @@ export async function createPost(data: CreatePostRequest) {
 }
 
 export const updatePost = async (postId: number, body: unknown) => {
-  const res = await fetch(`/api/posts/${postId}`, {
+  const res = await apiFetch(`/api/posts/${postId}`, {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -43,7 +44,7 @@ export const updatePost = async (postId: number, body: unknown) => {
 };
 
 export const deletePost = async (postId: number) => {
-  const res = await fetch(`/api/posts/${postId}`, {
+  const res = await apiFetch(`/api/posts/${postId}`, {
     method: "DELETE",
     credentials: "include",
   });
@@ -61,10 +62,10 @@ export async function getPostListByBoardCode(
   const encoded = encodeURIComponent(boardCode);
   const safeQuery = encodeURIComponent(query ?? "");
 
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?query=${safeQuery}&boardCode=${encoded}&page=${page}&size=${size}`;
+  const url = `/api/posts?query=${safeQuery}&boardCode=${encoded}&page=${page}&size=${size}`;
 
   try {
-    const res = await fetch(url, {
+    const res = await apiFetch(url, {
       cache: "no-store",
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -96,8 +97,8 @@ export async function fetchPostsByBoardId(
   totalPages: number;
   totalElements: number;
 }> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/boards/${boardId}?page=${page - 1}&size=${size}&query=${encodeURIComponent(query)}`,
+  const res = await apiFetch(
+    `/api/posts/boards/${boardId}?page=${page - 1}&size=${size}&query=${encodeURIComponent(query)}`,
     {
       credentials: "include",
       method: "GET",
@@ -116,7 +117,7 @@ export async function fetchPostsByBoardId(
 }
 
 export const createCriticPost = async (data: PostCreateRequestDto) => {
-  const response = await fetch("/api/posts", {
+  const response = await apiFetch("/api/posts", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -133,7 +134,7 @@ export const createCriticPost = async (data: PostCreateRequestDto) => {
 };
 
 export const getCriticPostDetail = async (postId: string): Promise<PostDetail> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`, {
+  const res = await apiFetch(`/api/posts/${postId}`, {
     method: "GET",
     credentials: "include",
     headers: {

@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/apis/apiFetch";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -9,7 +10,7 @@ export const PresignedImage = ({ filename }: Props) => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/post-images/presigned-url?filename=${encodeURIComponent(filename)}`, {
+    apiFetch(`/api/post-images/presigned-url?filename=${encodeURIComponent(filename)}`, {
       credentials: "include",
     })
       .then(res => {

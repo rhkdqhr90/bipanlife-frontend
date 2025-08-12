@@ -9,6 +9,7 @@ import { CommentSection } from "@/components/comment/CommentSection";
 import { deletePost } from "@/lib/apis/posts";
 import { useUserStore } from "@/stores/userStore";
 import { ReactionButtons } from "@/components/common/ReactionButton";
+import { apiFetch } from "@/lib/apis/apiFetch";
 
 interface Rating {
   name: string;
@@ -29,6 +30,7 @@ interface PostDetail {
   hasPoll: boolean;
   likeCount: number;
   dislikeCount: number;
+  userReaction: string;
   viewCount: number;
   commentCount: number;
   createdAt: string;
@@ -39,17 +41,23 @@ interface PostDetail {
 export default function CriticPostDetailPage() {
   const { boardType, postId } = useParams() as { boardType: string; postId: string };
   const [post, setPost] = useState<PostDetail | null>(null);
+  const [loading, setLoading] = useState(true); //
   const router = useRouter();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await fetch(`/api/posts/${postId}`);
+        setLoading(true);
+
+        const res = await apiFetch(`/api/posts/${postId}`);
         if (!res.ok) throw new Error("Failed to fetch post");
         const data = await res.json();
+
         setPost(data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -72,7 +80,9 @@ export default function CriticPostDetailPage() {
     }
   };
 
-  if (!post) return <div className="p-10 text-gray-500">로딩 중...</div>;
+  if (loading || !post) {
+    return <div className="p-10 text-gray-500">로딩 중...</div>;
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen py-16 px-6 sm:px-10 lg:px-16">
@@ -142,7 +152,13 @@ export default function CriticPostDetailPage() {
 
         {/* 추천/비추천 버튼 */}
         <div className="mt-8 pt-6 border-t border-gray-200 flex justify-center">
-          <ReactionButtons target="posts" id={post.id} />
+          <ReactionButtons
+            target="posts"
+            id={post.id}
+            initialLikeCount={post.likeCount} // ✅ 추가
+            initialDislikeCount={post.dislikeCount} // ✅ 추가
+            initialUserReaction={post.userReaction} // ✅ 추가
+          />
         </div>
 
         {/* 수정/삭제 버튼 */}

@@ -28,7 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Header navLinks={navLinks} />
           <SubMenuWrapper navLinks={navLinks} />
           <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-6">{children}</main>
-          <Footer />
+          <Footer navLinks={navLinks} />
           <SideFloatingMenuWrapper />
         </div>
       </body>

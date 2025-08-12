@@ -1,5 +1,7 @@
 // 📁 src/lib/apis/reactions.ts
 
+import { apiFetch } from "./apiFetch";
+
 export type ReactionType = "LIKE" | "DISLIKE";
 
 /**
@@ -14,7 +16,7 @@ export async function react(
   type: ReactionType,
 ): Promise<void> {
   const endpoint = `/api/${target}/${id}/${type.toLowerCase()}`;
-  const res = await fetch(endpoint, {
+  const res = await apiFetch(endpoint, {
     method: "POST",
     credentials: "include",
   });

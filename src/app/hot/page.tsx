@@ -1,20 +1,31 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import HotPostList from "@/components/hot/HotPostList";
 import { getHotPosts } from "@/lib/apis/hot";
 import { RangeType } from "@/types/hot";
 
 export default function HotPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const raw = searchParams.get("range") ?? "TODAY";
-  const range: RangeType = isValidRange(raw) ? raw : "TODAY";
+
+  const raw = searchParams.get("range"); // ❗ 기본값 넣지 마!
+  const [range, setRange] = useState<RangeType | null>(null);
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!raw || !isValidRange(raw)) {
+      router.replace("/hot?range=TODAY");
+    } else {
+      setRange(raw);
+    }
+  }, [raw]);
+
+  useEffect(() => {
+    if (!range) return;
     setLoading(true);
     getHotPosts(range)
       .then(p => setPosts(p))

@@ -2,8 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import { ChatMessageItem } from "./ChatMessageItem";
-import { ChatMessageItemProps } from "@/types/chat";
 
+interface ChatMessageItemProps {
+  id?: number;
+  senderId: number;
+  senderName: string;
+  content: string;
+  type: "NOTICE" | "TALK" | "VOTE";
+  sentAt: string;
+  roomCode: string;
+}
 interface ChatMessageListProps {
   messages: ChatMessageItemProps[];
   myUserId: number;

@@ -1,7 +1,9 @@
+import { apiFetch } from "./apiFetch";
+
 // src/api/chat/joinChatRoom.ts
 export async function joinChatRoom(roomCode: string, userId: number): Promise<void> {
   try {
-    const res = await fetch(`/api/chat/rooms/${roomCode}/join?userId=${userId}`, {
+    const res = await apiFetch(`/api/chat/rooms/${roomCode}/join?userId=${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

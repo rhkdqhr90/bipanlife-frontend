@@ -1,5 +1,7 @@
+import { apiFetch } from "./apiFetch";
+
 export const getMyProfile = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/me`, {
+  const res = await apiFetch(`/users/me`, {
     method: "GET",
     credentials: "include",
   });
@@ -14,7 +16,7 @@ interface UpdateMyProfilePayload {
 }
 
 export const updateMyProfile = async (payload: UpdateMyProfilePayload) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/me`, {
+  const res = await apiFetch(`/users/me`, {
     method: "PATCH",
     credentials: "include",
     headers: {
@@ -28,20 +30,17 @@ export const updateMyProfile = async (payload: UpdateMyProfilePayload) => {
 };
 
 export const checkNicknameDuplicate = async (nickname: string) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/nickname-exist?nickname=${nickname}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+  const res = await apiFetch(`/users/nickname-exist?nickname=${nickname}`, {
+    method: "GET",
+    credentials: "include",
+  });
   if (!res.ok) throw new Error("중복 확인 실패");
   const data = await res.json();
   return data.exists as boolean;
 };
 
 export const getMyPosts = async (page = 0, size = 10) => {
-  const res = await fetch(`/api/posts/users/me?page=${page}&size=${size}`, {
+  const res = await apiFetch(`/api/posts/users/me?page=${page}&size=${size}`, {
     method: "GET",
     credentials: "include",
   });
@@ -50,7 +49,7 @@ export const getMyPosts = async (page = 0, size = 10) => {
 };
 
 export const getMyComments = async (page = 0, size = 10) => {
-  const res = await fetch(`/api/comments/users/me?page=${page}&size=${size}`, {
+  const res = await apiFetch(`/api/comments/users/me?page=${page}&size=${size}`, {
     method: "GET",
     credentials: "include",
   });
@@ -59,7 +58,7 @@ export const getMyComments = async (page = 0, size = 10) => {
 };
 
 export const deleteMyAccount = async () => {
-  const res = await fetch("/auth/", {
+  const res = await apiFetch("/auth/", {
     method: "DELETE",
     credentials: "include",
   });

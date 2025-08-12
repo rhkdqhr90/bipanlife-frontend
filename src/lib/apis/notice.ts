@@ -1,6 +1,7 @@
 // 📄 src/lib/apis/notice.ts
 
 import { PostListItem } from "@/types/PostListItem";
+import { apiFetch } from "./apiFetch";
 
 // 게시판 타입 정의
 export type NoticeType = "terms" | "privacy" | "guideline" | "discussion" | "faq" | "notice";
@@ -27,8 +28,8 @@ export async function fetchNoticePostsByType(
   totalElements: number;
 }> {
   const boardId = boardTypeMap[type];
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/boards/${boardId}?page=${page - 1}&size=${size}&query=${encodeURIComponent(query)}`,
+  const res = await apiFetch(
+    `/api/posts/boards/${boardId}?page=${page - 1}&size=${size}&query=${encodeURIComponent(query)}`,
     {
       credentials: "include",
       method: "GET",

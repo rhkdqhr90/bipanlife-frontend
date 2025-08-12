@@ -8,6 +8,7 @@ import { LogOut } from "lucide-react";
 import { useAuth } from "@/hook/userAuth";
 import { useRouter, usePathname } from "next/navigation";
 import { NavLink } from "@/types/MenuItem";
+import { apiFetch } from "@/lib/apis/apiFetch";
 
 interface HeaderProps {
   navLinks: NavLink[];
@@ -27,7 +28,7 @@ export const Header = ({ navLinks }: HeaderProps) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/me`, {
+        const res = await apiFetch(`/users/me`, {
           credentials: "include", // 서버가 쿠키 기반 JWT라면 유지
         });
 

@@ -4,7 +4,7 @@ export interface ChatMessageItemProps {
   senderId: number;
   senderName: string;
   content: string;
-  type: "ENTER" | "TALK" | "EXIT" | "NOTICE" | "TEXT"; // 백엔드와 일치
+  type: ChatMessageType; // 백엔드와 일치
   sentAt: string;
   isMine?: boolean;
   roomCode: string; // roomId -> roomCode로 변경 (백엔드와 일치)
@@ -25,4 +25,17 @@ export interface BackendChatMessage {
   content: string;
   sentAt: string;
   type: "NOTICE" | "TEXT" | "VOTE";
+}
+
+export type ChatMessageType = "TEXT" | "NOTICE" | "ENTER" | "TALK" | "EXIT" | "VOTE"; // ← 추가
+
+export interface ChatMessageItemProps {
+  id?: number;
+  senderId: number;
+  senderName: string;
+  content: string;
+  type: ChatMessageType;
+  sentAt: string;
+  roomCode: string;
+  isMine?: boolean;
 }

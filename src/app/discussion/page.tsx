@@ -1,63 +1,82 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { apiFetch } from "@/lib/apis/apiFetch";
+
 interface ChatRoom {
-  code: string; // ✅ 여기
+  code: string;
   title: string;
   createdAt: string;
   expiredAt: string;
   closed: boolean;
 }
 
+interface Me {
+  id: number;
+  role: "ADMIN" | "CRITIC" | "USER" | "ANONYMOUS";
+  nickName: string;
+}
+
 export default function DiscussionPage() {
   const [room, setRoom] = useState<ChatRoom | null>(null);
-  const router = useRouter();
-  const [userId, setUserId] = useState<number>(1);
+  const [me, setMe] = useState<Me | null>(null);
+  const [title, setTitle] = useState("오늘의 토론방");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    // ✅ 오늘의 채팅방 정보 가져오기
-    const fetchRoom = async () => {
+    // 내 정보
+    (async () => {
       try {
-        const res = await fetch("/api/chat/rooms/today");
-        if (!res.ok) throw new Error("채팅방 정보를 불러올 수 없습니다.");
-        const data = await res.json();
-
-        setRoom(data);
-      } catch (e) {
-        console.error(e);
+        const res = await apiFetch("/users/me", { credentials: "include" });
+        if (res.ok) {
+          const data = await res.json();
+          setMe(data);
+        } else {
+          setMe(null);
+        }
+      } catch {
+        setMe(null);
       }
-    };
+    })();
 
-    fetchRoom();
+    // 오늘의 채팅방
+    (async () => {
+      try {
+        const res = await apiFetch("/api/chat/rooms/today");
+        if (res.ok) {
+          const data = await res.json();
+          setRoom(data);
+        }
+      } catch {}
+    })();
   }, []);
 
   const handleCreateRoom = async () => {
-    if (!window.confirm("채팅방을 생성하시겠습니까?")) return;
+    if (!title.trim()) {
+      alert("방 제목을 입력하세요.");
+      return;
+    }
+    if (!confirm("채팅방을 생성하시겠습니까?")) return;
 
     try {
       setLoading(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/chat/rooms`, {
+      const res = await apiFetch(`/api/chat/rooms`, {
         method: "POST",
-        credentials: "include", // ✅ 쿠키 자동 포함
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: "오늘의 토론방",
-        }),
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
       });
 
       if (!res.ok) {
-        throw new Error(`방 생성 실패 (${res.status})`);
+        const msg = await res.text();
+        throw new Error(`방 생성 실패 (${res.status}) ${msg}`);
       }
 
       const data = await res.json();
       alert(`방 생성 완료: ${data.title} (code: ${data.code})`);
-      // ✅ 이동도 가능
-      window.location.href = `/discussion/${data.code}`;
+      router.push(`/discussion/${data.code}`);
     } catch (err) {
       alert("방 생성 실패: " + (err as Error).message);
     } finally {
@@ -65,25 +84,32 @@ export default function DiscussionPage() {
     }
   };
 
-  if (userId !== 1) return null;
-
   const handleEnter = () => {
-    if (room) {
-      console.log(`${room.code}`);
-      router.push(`/chat/${room.code}`);
-    }
+    if (room) router.push(`/chat/${room.code}`);
   };
+
+  const isAdmin = me?.role === "ADMIN";
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">오늘의 실시간 토론방</h1>
-      {userId === 1 && !room && (
-        <button
-          onClick={handleCreateRoom}
-          className="mb-4 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-        >
-          채팅방 생성
-        </button>
+
+      {isAdmin && !room && (
+        <div className="mb-4 flex items-center gap-2">
+          <input
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="방 제목을 입력하세요"
+            className="border rounded px-3 py-2 w-64"
+          />
+          <button
+            onClick={handleCreateRoom}
+            disabled={loading}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {loading ? "생성 중..." : "채팅방 생성"}
+          </button>
+        </div>
       )}
 
       {room ? (

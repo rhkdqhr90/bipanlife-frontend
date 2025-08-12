@@ -1,10 +1,11 @@
 // 📄 src/lib/apis/comments.ts
 
 import { PostComment } from "@/types/comment";
+import { apiFetch } from "./apiFetch";
 
 // ✅ 댓글 작성
 export const postComment = async (postId: number, content: string, parentId?: number) => {
-  const response = await fetch(`/api/comments`, {
+  const response = await apiFetch(`/api/comments`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -23,7 +24,7 @@ export const postComment = async (postId: number, content: string, parentId?: nu
 
 // ✅ 댓글 목록 조회
 export async function fetchComments(postId: number): Promise<PostComment[]> {
-  const res = await fetch(`/api/comments/posts/${postId}`, {
+  const res = await apiFetch(`/api/comments/posts/${postId}`, {
     method: "GET",
     credentials: "include",
   });
@@ -36,7 +37,7 @@ export async function fetchComments(postId: number): Promise<PostComment[]> {
 
 // ✅ 댓글 수정
 export const updateComment = async (commentId: number, content: string) => {
-  const response = await fetch(`/api/comments/${commentId}`, {
+  const response = await apiFetch(`/api/comments/${commentId}`, {
     method: "PATCH",
     credentials: "include",
     headers: {
@@ -51,7 +52,7 @@ export const updateComment = async (commentId: number, content: string) => {
 
 // ✅ 댓글 삭제
 export const deleteComment = async (commentId: number) => {
-  const response = await fetch(`/api/comments/${commentId}`, {
+  const response = await apiFetch(`/api/comments/${commentId}`, {
     method: "DELETE",
     credentials: "include",
   });

@@ -7,6 +7,7 @@ import { TiptapEditor } from "@/components/editor/TiptapEditor";
 import { KakaoMapViewer } from "@/components/map/KakaoMapViewer";
 import { usePathname } from "next/navigation";
 import { useParams } from "next/navigation";
+import { apiFetch } from "@/lib/apis/apiFetch";
 
 const boardCodeToIdMap: Record<string, number> = {
   general: 21,
@@ -28,7 +29,7 @@ const FreeWritePage = () => {
 
   useEffect(() => {
     if (!boardId) return;
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/boards/${boardId}`, {
+    apiFetch(`/api/boards/${boardId}`, {
       credentials: "include",
     })
       .then(res => res.json())
@@ -78,7 +79,7 @@ const FreeWritePage = () => {
         body.longitude = location.longitude;
       }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`, {
+      const res = await apiFetch(`/api/posts`, {
         method: "POST",
         credentials: "include",
         headers: {

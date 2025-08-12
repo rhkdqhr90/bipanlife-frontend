@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserStore } from "@/stores/userStore";
+import { apiFetch } from "@/lib/apis/apiFetch";
 
 const OAuth2SuccessPage = () => {
   const router = useRouter();
@@ -17,7 +18,7 @@ const OAuth2SuccessPage = () => {
     const finalRedirect = decodedRedirect.startsWith("/login") ? "/" : decodedRedirect;
 
     // 사용자 정보 조회
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/me`, {
+    apiFetch(`/users/me`, {
       method: "GET",
       credentials: "include",
     })

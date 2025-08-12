@@ -1,10 +1,12 @@
+import { apiFetch } from "./apiFetch";
+
 export const uploadImages = async (files: File[]): Promise<string[]> => {
   const formData = new FormData();
   files.forEach(file => {
     formData.append("images", file);
   });
 
-  const response = await fetch("/api/post-images/upload", {
+  const response = await apiFetch("/api/post-images/upload", {
     method: "POST",
     body: formData,
     credentials: "include",

@@ -1,25 +1,45 @@
 import type { NextConfig } from "next";
 
+/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
-  // ❌ experimental.css.transformer 는 제거해야 함
   experimental: {},
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.bipanlife.com", // ← 예: S3 CloudFront 도메인
+        hostname: "cdn.bipanlife.com",
       },
     ],
   },
-};
+  // async rewrites() {
+  //   return [
+  //     // 방법 1: 개별 경로 지정 (권장)
+  //     {
+  //       source: "/api/:path*",
+  //       destination: "http://backend:8080/api/:path*",
+  //     },
+  //     {
+  //       source: "/auth/:path*",
+  //       destination: "http://backend:8080/auth/:path*",
+  //     },
+  //     {
+  //       source: "/oauth2/:path*",
+  //       destination: "http://backend:8080/oauth2/:path*",
+  //     },
 
-module.exports = {
+  //   //  방법 2: 모든 백엔드 API 경로를 한번에 (선택사항)
+  //     {
+  //       source: "/(api|auth|oauth2)/:path*",
+  //       destination: "http://backend:8080/$1/:path*",
+  //     },
+  //   ];
+  // },
+
   async rewrites() {
     return [
-      {
-        source: "/api/:path*", // 클라이언트는 /api/notice/1 로 요청
-        destination: "http://localhost:8080/api/:path*", // 실제 백엔드로 연결
-      },
+      { source: "/api/:path*", destination: "http://backend:8080/api/:path*" },
+      { source: "/auth/:path*", destination: "http://backend:8080/auth/:path*" },
+      { source: "/oauth2/:path*", destination: "http://backend:8080/oauth2/:path*" },
     ];
   },
 };

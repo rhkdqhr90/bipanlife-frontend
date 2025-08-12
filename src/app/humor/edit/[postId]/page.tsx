@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/stores/userStore";
 import { TiptapEditor } from "@/components/editor/TiptapEditor";
+import { apiFetch } from "@/lib/apis/apiFetch";
 
 interface PostDetail {
   id: number;
@@ -35,7 +36,7 @@ const HumorEditPage = () => {
 
   const fetchGetPost = async () => {
     try {
-      const res = await fetch(`/api/posts/${postId}`, {
+      const res = await apiFetch(`/api/posts/${postId}`, {
         method: "GET",
         credentials: "include",
       });
@@ -49,7 +50,7 @@ const HumorEditPage = () => {
 
   const handleSubmit = async () => {
     try {
-      const res = await fetch(`/api/posts/${postId}`, {
+      const res = await apiFetch(`/api/posts/${postId}`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

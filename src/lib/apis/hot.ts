@@ -1,8 +1,9 @@
 // 📁 /lib/apis/hot.ts
 import { RangeType } from "@/types/hot";
+import { apiFetch } from "./apiFetch";
 
 export async function getHotPosts(range: RangeType) {
-  const res = await fetch(`/api/hot-posts?range=${range}`, {
+  const res = await apiFetch(`/api/hot-posts?range=${range}`, {
     cache: "no-store",
     credentials: "include", // ✅ HttpOnly 쿠키 인증 처리 시 필수!
   });
@@ -12,7 +13,7 @@ export async function getHotPosts(range: RangeType) {
 
 // ✅ 인기 태그 기반 게시글 가져오기
 export async function getHotPostsByTag() {
-  const res = await fetch("/api/hot-posts/posts-by-tag", {
+  const res = await apiFetch("/api/hot-posts/posts-by-tag", {
     method: "GET",
     credentials: "include",
   });

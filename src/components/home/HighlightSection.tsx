@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { HighlightColumn } from "@/components/home/HighlightColumn";
 import { HighlightColumnProps } from "@/types/Highlight";
 import { Smile, Heart, MessageCircle } from "lucide-react";
+import { apiFetch } from "@/lib/apis/apiFetch";
 
 export const HighlightSection: React.FC = () => {
   const [humorItems, setHumorItems] = useState<HighlightColumnProps["items"]>([]);
@@ -12,7 +13,7 @@ export const HighlightSection: React.FC = () => {
   const [debateItems, setDebateItems] = useState<HighlightColumnProps["items"]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/highlight/humor`, {
+    apiFetch(`/api/highlight/humor`, {
       credentials: "include",
     })
       .then(res => res.json())
@@ -21,7 +22,7 @@ export const HighlightSection: React.FC = () => {
         else console.error("❗ humor 응답이 배열이 아닙니다", data);
       });
 
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/highlight/praise`, {
+    apiFetch(`/api/highlight/praise`, {
       credentials: "include",
     })
       .then(res => res.json())
@@ -31,7 +32,7 @@ export const HighlightSection: React.FC = () => {
         else console.error("❗ praise 응답이 배열이 아닙니다", data);
       });
 
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/highlight/debate`, {
+    apiFetch(`/api/highlight/debate`, {
       credentials: "include",
     })
       .then(res => res.json())

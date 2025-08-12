@@ -1,3 +1,5 @@
+import { apiFetch } from "./apiFetch";
+
 export interface NavLink {
   name: string;
   href?: string;
@@ -38,7 +40,7 @@ const groupOrder: Record<string, number> = {
 };
 
 export async function getPanels(): Promise<NavLink[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/boards`, {
+  const res = await apiFetch(`/api/boards`, {
     cache: "no-store",
     credentials: "include",
   });

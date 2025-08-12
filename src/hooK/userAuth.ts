@@ -1,4 +1,5 @@
 // src/hooks/useAuth.ts
+import { apiFetch } from "@/lib/apis/apiFetch";
 import { useUserStore } from "@/stores/userStore";
 
 export const useAuth = () => {
@@ -6,7 +7,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`, {
+      await apiFetch(`/auth/logout`, {
         method: "POST",
         credentials: "include", // 쿠키 포함
         headers: {

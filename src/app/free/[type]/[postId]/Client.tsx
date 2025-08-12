@@ -11,6 +11,7 @@ import { CommentSection } from "@/components/comment/CommentSection";
 import { PostComment } from "@/types/comment";
 import { useUserStore } from "@/stores/userStore";
 import { ReactionButtons } from "@/components/common/ReactionButton";
+import { apiFetch } from "@/lib/apis/apiFetch";
 
 interface PostDetail {
   id: number;
@@ -42,7 +43,7 @@ export default function FreeDetailClient() {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch(`/api/comments/posts/${postId}`, {
+      const res = await apiFetch(`/api/comments/posts/${postId}`, {
         method: "GET",
         credentials: "include",
       });
@@ -59,7 +60,7 @@ export default function FreeDetailClient() {
 
     try {
       if (post?.id == null) return;
-      const res = await fetch(`/api/posts/${post.id}`, {
+      const res = await apiFetch(`/api/posts/${post.id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -81,7 +82,7 @@ export default function FreeDetailClient() {
           .find(row => row.startsWith("accessToken="))
           ?.split("=")[1];
 
-        const res = await fetch(`/api/posts/${postId}`, {
+        const res = await apiFetch(`/api/posts/${postId}`, {
           method: "GET",
           headers: {
             Authorization: token ? `Bearer ${token}` : "",

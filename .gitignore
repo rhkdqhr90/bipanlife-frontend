@@ -1,8 +1,6 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # ─────────────────────────────
 # 📦 Dependencies
-/node_modules
+node_modules/
 .pnp.*
 /.pnp
 .yarn/*
@@ -13,14 +11,21 @@
 
 # ─────────────────────────────
 # 🧪 Testing
-/coverage
+coverage/
+cypress/screenshots/
+cypress/videos/
+playwright-report/
+test-results/
 
 # ─────────────────────────────
-# ⚙️ Next.js Build
+# ⚙️ Next.js / Build Artifacts
 .next/
 out/
 dist/
 build/
+.turbo/
+.cache/
+.parcel-cache/
 
 # ─────────────────────────────
 # 📝 Env files
@@ -35,18 +40,35 @@ next-env.d.ts
 # ─────────────────────────────
 # 🧾 Logs & Debug
 *.log
-logs
+logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+.eslintcache
 
 # ─────────────────────────────
 # 💻 IDE / OS
 .DS_Store
 .vscode/
+.idea/
+*.iml
+*.swp
 
 # ─────────────────────────────
-# ☁️ Deployment
-.vercel
+# ☁️ Deployment / CI
+.vercel/
 *.pem
+*.key
+certbot/
+*.crt
+
+# ─────────────────────────────
+# 🐳 Docker
+.dockerignore
+Dockerfile.local
+Dockerfile.docker
+Dockerfile.prod
+docker-compose.local.yml
+docker-compose.docker.yml
+docker-compose.prod.yml

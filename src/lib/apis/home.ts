@@ -1,10 +1,11 @@
 // src/lib/apis/getHotBestItems.ts
 import { HotBestItem, HotNowItem, RawHotNowResponse, SlideItem } from "@/types/home";
 import { formatTimeAgo } from "@/utils/time";
+import { apiFetch } from "./apiFetch";
 
 export async function getHotBestItems(): Promise<HotBestItem[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/hot-posts?range=WEEK`, {
+    const res = await apiFetch(`/api/hot-posts?range=WEEK`, {
       cache: "no-store",
       credentials: "include", // ✅ 쿠키 기반 인증 처리 시 필수
     });
@@ -30,7 +31,7 @@ export async function getHotBestItems(): Promise<HotBestItem[]> {
 
 export async function getSlideItems(): Promise<SlideItem[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/home/slide`, {
+    const res = await apiFetch(`/home/slide`, {
       next: { revalidate: 60 }, // ISR (선택 사항)
     });
 
@@ -48,7 +49,7 @@ export async function getSlideItems(): Promise<SlideItem[]> {
 
 export async function getHotNowItems(): Promise<HotNowItem[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/hot-posts/hot-now-posts`, {
+    const res = await apiFetch(`/api/hot-posts/hot-now-posts`, {
       next: { revalidate: 30 },
     });
 

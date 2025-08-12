@@ -1,4 +1,3 @@
-
 import { HumorPageClient } from "@/components/humor/HumorPageClinet";
 
 interface Props {

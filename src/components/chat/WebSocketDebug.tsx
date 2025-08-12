@@ -1,6 +1,6 @@
 // src/components/WebSocketDebug.tsx
 import React, { useState } from "react";
-import { useDebugWebSocket } from "@/hook/useDebugWebSocket";
+import { useDebugWebSocket } from "@/hooks/useDebugWebSocket";
 
 export const WebSocketDebug: React.FC = () => {
   const [roomCode, setRoomCode] = useState("test-room");

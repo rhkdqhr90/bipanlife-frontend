@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useState, useRef } from "react";
 import { useUserStore } from "@/stores/userStore";
 import { LogOut } from "lucide-react";
-import { useAuth } from "@/hook/userAuth";
+import { useAuth } from "@/hooks/userAuth";
 import { useRouter, usePathname } from "next/navigation";
 import { NavLink } from "@/types/MenuItem";
 import { apiFetch } from "@/lib/apis/apiFetch";

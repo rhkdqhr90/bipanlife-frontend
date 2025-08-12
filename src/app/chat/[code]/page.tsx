@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { joinChatRoom } from "@/lib/apis/joinChatRoom";
 import { ChatMessageList } from "@/components/chat/ChatMessageList";
-import { useChatSocket } from "@/hook/useChatSocket";
+import { useChatSocket } from "@/hooks/useChatSocket";
 import { useUserStore } from "@/stores/userStore";
 import { apiFetch } from "@/lib/apis/apiFetch";
 import clsx from "clsx";

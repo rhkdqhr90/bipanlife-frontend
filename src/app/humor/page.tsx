@@ -1,4 +1,3 @@
-export const runtime = "edge";
 
 import { HumorPageClient } from "@/components/humor/HumorPageClinet";
 

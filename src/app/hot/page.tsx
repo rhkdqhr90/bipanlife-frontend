@@ -1,5 +1,4 @@
 "use client";
-export const runtime = "edge";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import HotPostList from "@/components/hot/HotPostList";

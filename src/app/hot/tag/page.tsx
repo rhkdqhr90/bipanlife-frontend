@@ -1,6 +1,5 @@
 // 📄 /app/hot/tag/page.tsx
 "use client";
-export const runtime = "edge";
 import { useEffect, useState } from "react";
 import { HotPostByTagResponse } from "@/types/hot";
 import { getHotPostsByTag } from "@/lib/apis/hot";

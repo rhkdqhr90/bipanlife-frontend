@@ -1,5 +1,4 @@
 "use client";
-export const runtime = "edge";
 import MyPageClient from "@/components/mypage/MyPageClient";
 import React from "react";
 

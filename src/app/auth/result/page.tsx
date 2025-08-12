@@ -1,6 +1,5 @@
 // app/auth/result/page.tsx
 "use client";
-export const runtime = "edge";
 import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 

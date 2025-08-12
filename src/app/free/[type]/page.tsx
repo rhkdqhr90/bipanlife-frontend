@@ -1,4 +1,3 @@
-export const runtime = "edge";
 // ✅ src/app/free/[type]/page.tsx
 import { FreePageClient } from "@/components/free/FreePageClient";
 import { VALID_TYPES } from "@/types/freetype";

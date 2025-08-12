@@ -1,5 +1,4 @@
 "use client";
-export const runtime = "edge";
 import { startOAuth } from "@/lib/apis/startOAuth";
 import React from "react";
 

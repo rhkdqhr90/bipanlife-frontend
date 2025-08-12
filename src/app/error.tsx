@@ -1,6 +1,5 @@
 // src/app/error.tsx
 "use client";
-export const runtime = "edge";
 
 export default function GlobalError({ error }: { error: unknown }) {
   console.error(error);

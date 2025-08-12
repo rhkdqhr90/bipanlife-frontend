@@ -1,7 +1,5 @@
 // app/not-found.tsx
-export const runtime = "edge"; // ✅ not-found도 Edge에서 실행
 
-// (선택) 클라이언트 UI만 쓰고 싶다면 다음 줄 추가 가능
 // 'use client';
 
 export default function NotFound() {

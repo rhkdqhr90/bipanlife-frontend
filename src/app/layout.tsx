@@ -7,8 +7,6 @@ import { Footer } from "@/components/layout/Footer";
 import { SubMenuWrapper } from "@/components/layout/Menu/SubMenuWarrper";
 import { getPanels } from "@/lib/apis/getPanels";
 import { SideFloatingMenuWrapper } from "@/components/home/SideFloatingMenuWrapper";
-// ✅ 모든 하위 라우트에 Edge Runtime 적용
-export const runtime = "edge";
 
 // ✅ (권장) SSR에서 외부 fetch 문제 회피해 첫 배포 안정화
 export const dynamic = "force-dynamic";

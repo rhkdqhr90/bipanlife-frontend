@@ -32,5 +32,6 @@ const getBaseUrl = () => {
 
 export const apiFetch = (url: string, options?: RequestInit) => {
   const baseUrl = getBaseUrl();
+  console.debug("[apiFetch]", url);
   return fetch(`${baseUrl}${url}`, { credentials: "include", ...options });
 };

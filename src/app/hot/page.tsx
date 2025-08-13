@@ -23,6 +23,10 @@ export default function HotPage() {
 
   useEffect(() => {
     if (!isClient) return;
+    console.log("=== 디버깅 ===");
+    console.log("현재 URL:", window.location.href);
+    console.log("raw:", raw);
+    console.log("isValidRange(raw):", raw ? isValidRange(raw) : false);
 
     if (!raw || !isValidRange(raw)) {
       router.replace("/hot?range=TODAY");

@@ -18,6 +18,7 @@ export const Footer: React.FC<Props> = ({ navLinks }) => {
   const hotHref = "/hot?range=TODAY";
   const criticHref = findHref("비판", "/critic/politics");
   const freeHref = findHref("자유", "/free/general");
+  const humor = findHref("유머", "/humor");
   const discussionHref = findHref("토론방", "/discussion");
 
   return (
@@ -57,6 +58,9 @@ export const Footer: React.FC<Props> = ({ navLinks }) => {
                   </li>
                 ))}
               </ul> */}
+            </li>
+            <li>
+              <Link href={humor}>유머</Link>
             </li>
             <li>
               <Link href={discussionHref}>토론방</Link>

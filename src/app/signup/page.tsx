@@ -15,14 +15,14 @@ const OAuth2SignUpPage = () => {
 
   useEffect(() => {
     const fetchTerms = async () => {
-      const res = await apiFetch(`/api/terms`);
+      const res = await apiFetch(`/api/notice/terms`);
       if (res.ok) {
         const data = await res.json();
         setTermsContent(data.content); // HTML or Text
       }
     };
     const fetchPrivacy = async () => {
-      const res = await apiFetch(`/api/privacy`);
+      const res = await apiFetch(`/api/notice/privacy`);
       if (res.ok) {
         const data = await res.json();
         setprivacyContent(data.content); // HTML or Text

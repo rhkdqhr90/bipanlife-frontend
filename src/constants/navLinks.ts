@@ -56,10 +56,12 @@ export const navLinks: NavLink[] = [
     name: "공지",
     href: "/notice/notice",
     dropdown: [
-      { name: "공지 사항", href: "/notice/notice" },
-      { name: "이용약관", href: "/notice/terms" },
-      { name: "자주 묻는 질문", href: "/notice/faq" },
-      { name: "가이드라인", href: "/notice/guideline" },
+      { name: "공지 사항", href: "/notice/notice" }, // 공지사항
+      { name: "이용약관", href: "/notice/terms" }, // 이용약관
+      { name: "개인정보처리방침", href: "/notice/privacy" }, // ✅ 추가
+      { name: "자주 묻는 질문", href: "/notice/faq" }, // FAQ
+      { name: "가이드라인", href: "/notice/guideline" }, // 가이드라인
+      { name: "토론 공지", href: "/notice/discussion" }, // ✅ 추가
     ],
   },
 ];

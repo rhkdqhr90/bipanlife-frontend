@@ -2,6 +2,7 @@
 import { apiFetch } from "@/lib/apis/apiFetch";
 import { startOAuth } from "@/lib/apis/startOAuth";
 import React, { useEffect, useState } from "react";
+import DOMPurify from "isomorphic-dompurify";
 
 const OAuth2SignUpPage = () => {
   const [agreeAll, setAgreeAll] = useState(false);
@@ -50,6 +51,14 @@ const OAuth2SignUpPage = () => {
     startOAuth(provider, "signup");
   };
 
+  const HtmlBox = ({ html }: { html: string }) => (
+    <div
+      className="w-full h-32 p-4 border rounded overflow-y-auto text-sm bg-gray-50 prose prose-sm max-w-none"
+      // ⚠️ 반드시 sanitize
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
+    />
+  );
+
   return (
     <div className="text-center max-w-2xl mx-auto mt-20 p-6">
       <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow-md text-center">
@@ -62,14 +71,6 @@ const OAuth2SignUpPage = () => {
           >
             네이버로 시작하기
           </button>
-
-          {/* <button
-            onClick={() => oauthLogin("kakao")}
-            className="w-full py-2 rounded bg-yellow-300 text-black font-semibold hover:bg-yellow-400"
-          >
-            카카오로 시작하기
-          </button> */}
-
           <button
             onClick={() => oauthLogin("google")}
             className="w-full py-2 rounded bg-red-500 text-white font-semibold hover:bg-red-600"
@@ -78,6 +79,7 @@ const OAuth2SignUpPage = () => {
           </button>
         </div>
       </div>
+
       {/* 모두 동의 */}
       <div className="mt-10 flex items-center gap-2 justify-start">
         <input
@@ -94,11 +96,8 @@ const OAuth2SignUpPage = () => {
       {/* 이용약관 */}
       <div className="mt-4 text-left">
         <p className="text-sm font-medium mb-1">[이용약관]</p>
-        <textarea
-          className="w-full h-32 p-4 border rounded resize-none overflow-y-auto text-sm bg-gray-50"
-          readOnly
-          value={termsContent}
-        />
+        {/* ⬇️ textarea → HtmlBox */}
+        <HtmlBox html={termsContent} />
         <div className="flex items-center gap-2 mt-2">
           <input
             type="checkbox"
@@ -112,11 +111,8 @@ const OAuth2SignUpPage = () => {
       {/* 개인정보처리방침 */}
       <div className="mt-4 text-left">
         <p className="text-sm font-medium mb-1">[개인정보처리방침]</p>
-        <textarea
-          className="w-full h-32 p-4 border rounded resize-none overflow-y-auto text-sm bg-gray-50"
-          readOnly
-          value={privacyContent}
-        />
+        {/* ⬇️ textarea → HtmlBox */}
+        <HtmlBox html={privacyContent} />
         <div className="flex items-center gap-2 mt-2">
           <input
             type="checkbox"

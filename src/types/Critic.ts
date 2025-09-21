@@ -12,6 +12,7 @@ export interface PostCreateRequestDto {
   tags: string[];
   ratings: RatingInput[];
   boardType: string;
+  imageUrls?: string[];
   placeName?: string;
   address?: string;
   latitude?: number;

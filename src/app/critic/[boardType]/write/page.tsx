@@ -22,6 +22,24 @@ export default function CriticWritePage() {
     { name: string; score: number; type: "positive" | "negative" }[]
   >([]);
   const boardId = criticBoardCodeToIdMap[boardType];
+
+  /**
+   * 본문 HTML에서 <img src="..."> URL 추출
+   * - SSR 대비: window 없는 환경에서 DOMParser 접근 방지
+   * - 중복 제거
+   */
+
+  function extractImageUrls(html: string): string[] {
+    if (!html) return [];
+    if (typeof window === "undefined") return [];
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const urls = Array.from(doc.querySelectorAll("img"))
+      .map(img => img.getAttribute("src"))
+      .filter((src): src is string => !!src && src.trim().length > 0);
+
+    return Array.from(new Set(urls));
+  }
+
   const [location, setLocation] = useState<{
     placeName: string;
     address: string;
@@ -41,11 +59,13 @@ export default function CriticWritePage() {
     }
 
     try {
+      const imageUrls = extractImageUrls(content);
       const postData: PostCreateRequestDto = {
         boardId,
         title,
         content,
         tags,
+        imageUrls,
         ratings,
         boardType,
         ...(location && {

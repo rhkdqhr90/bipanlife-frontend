@@ -72,6 +72,7 @@ export default function CriticPostDetailPage() {
 
   const handleDelete = async () => {
     try {
+      alert("게시물을 삭제 하시겠습니까?");
       await deletePost(Number(postId));
       router.push(`/critic/${boardType}`);
     } catch (error) {

@@ -49,7 +49,8 @@ export const deletePost = async (postId: number) => {
     credentials: "include",
   });
   if (!res.ok) throw new Error("게시글 삭제 실패");
-  return res.json();
+  if (res.status === 204) return { success: true }; // ✅ No Content 대응
+  return res.json(); // JSON 응답이 있을 때만 파싱
 };
 
 // 동적 게시판 을 위한 GetBoardCode

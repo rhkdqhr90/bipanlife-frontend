@@ -77,7 +77,6 @@ const nextConfig: NextConfig = {
       { source: "/users/:path*", destination: "https://api.bipanlife.com/users/:path*" },
     ];
   },
-
 };
 
 export default nextConfig;

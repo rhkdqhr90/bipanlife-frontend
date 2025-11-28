@@ -19,15 +19,13 @@
 // };
 
 const getBaseUrl = () => {
-  const publicBase = process.env.NEXT_PUBLIC_API_BASE_URL; // "https://api.bipanlife.com"
-
   // SSR
   if (typeof window === "undefined") {
-    return process.env.SSR_INTERNAL_API_URL || publicBase || "http://backend:8080";
+    return "http://backend:8080";
   }
 
   // ✅ CSR(브라우저)에서도 무조건 절대 URL 사용
-  return publicBase || "";
+  return "";
 };
 
 export const apiFetch = (url: string, options?: RequestInit) => {

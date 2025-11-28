@@ -21,7 +21,7 @@
 const getBaseUrl = () => {
   // SSR
   if (typeof window === "undefined") {
-    return "http://backend:8080";
+    return process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.bipanlife.com";
   }
 
   // ✅ CSR(브라우저)에서도 무조건 절대 URL 사용

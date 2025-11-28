@@ -77,9 +77,7 @@ const nextConfig: NextConfig = {
       { source: "/users/:path*", destination: "https://api.bipanlife.com/users/:path*" },
     ];
   },
-  env: {
-    NODE_TLS_REJECT_UNAUTHORIZED: "0",
-  },
+
 };
 
 export default nextConfig;
